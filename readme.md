@@ -1,24 +1,24 @@
-# Dotfiles
+# 🔧 My Dotfiles
 
-## Intro
+These are my personal dotfiles. They are pretty simple right now, but I plan custom
+expand them as I customize my setup further.
 
-These are my dotfiles, they are pretty simple but I will increase as I add more
-content in my setup (I plan on developing a bar with either Quickshell or AGS).
+## 📦 What's Inside
 
-For now, they provide content for:
+Current configurations for:
 
-- [Hyprland](https://github.com/hyprwm/Hyprland)
-- [Hyprlock](https://github.com/hyprwm/hyprlock)
-- [Hyprpaper](https://github.com/hyprwm/hyprpaper)
-- [Hyprpicker](https://github.com/hyprwm/hyprpicker)
-- [Kitty](https://github.com/kovidgoyal/kitty)
+- **[Hyprland](https://github.com/hyprwm/Hyprland)** - The compositor.
+- **[Hyprlock](https://github.com/hyprwm/hyprlock)** - The lockscreen.
+- **[Hyprpaper](https://github.com/hyprwm/hyprpaper)** - Wallpaper utility.
+- **[Hyprpicker](https://github.com/hyprwm/hyprpicker)** - Color picker.
+- **[Kitty](https://github.com/kovidgoyal/kitty)** - Terminal emulator.
 
-> Look at the docs of each program before modifying the anything.
+> **⚠️ Note:** Please look at the docs for each program before modifying anything.
 
-For launcher, I'm currently using Hyprlauncher, but I'm planning on moving to
-Rofi or Wofi later and add customization.
+## 🚧 Roadmap
 
-## Develpoment planned
+I'm currently using `Hyprlauncher` (placeholder), but I plan to migrate to a more
+robust launcher and build a custom bar using:
 
-- [Quickshell]() / [AGS]()
-- [Rofi](https://github.com/davatorium/rofi)/ [Wofi](https://github.com/SimplyCEO/wofi)
+- [ ] **Bar/Widgets:** [Quickshell](https://quickshell.org/) or [Aylur's GTK Shell (AGS)](https://github.com/Aylur/ags)
+- [ ] **Launcher:** [Rofi](https://github.com/davatorium/rofi) or [Wofi](https://github.com/SimplyCEO/wofi)

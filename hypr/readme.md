@@ -1,16 +1,18 @@
-# Hyprland config
+# Hyprland Config
 
-Right now things are pretty straightforward, and I plan to keep it that way
+It works. Don't touch it unless you know what you're doing.
 
-- data/ # Extra files used, should be called media actually but I'm lazy
-- hyprland/ # Hyprland related config, names are self-explanatory
-- scripts/ # Custom scripts used for some actions (such as screenshot and lockscreen)
-- hyprland.conf # Base of the hyprland configuration
-- hyprlock.conf # Base of the lockscreen config
-- hyprpaper.conf # Wallpaper utility for hyprland
-- variables.conf # self-explanatory
+### Structure
 
-Edit the first line in `anitext.sh` to change the texts in hyprlock.
-The defaults are:
+- `media/` -> Media files (wallpapers and anitext).
+- `hyprland/` -> Modular configs.
+- `scripts/` -> Custom actions (grim, slurp, etc).
+- `variables.conf` -> Colors and settings.
 
-Actually I won't mention the defaults, I cringe at them.
+### Customization
+
+For the lockscreen text, edit line 1 of `scripts/anitext.sh`.
+
+- **Do not ask me about the defaults.**
+- **Do not look too closely at the defaults.**
+- Just change them.
