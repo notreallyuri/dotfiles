@@ -1,0 +1,27 @@
+*
+
+!nvim/
+!kitty/
+!hypr/
+
+!nvim/**
+!kitty/**
+!hypr/**
+
+!readme.md
+!.gitignore
+
+### NVIM Specific ###
+
+nvim/tt.*
+nvim/.tests
+nvim/doc/tags
+nvim/debug
+nvim/.repro
+nvim/foo.*
+nvim/*.log
+nvim/data 
+
+### Hypr Specific ###
+
+hypr/data/anitext
