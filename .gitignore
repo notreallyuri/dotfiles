@@ -3,10 +3,12 @@
 !nvim/
 !kitty/
 !hypr/
+!rofi/
 
 !nvim/**
 !kitty/**
 !hypr/**
+!rofi/**
 
 !readme.md
 !.gitignore
