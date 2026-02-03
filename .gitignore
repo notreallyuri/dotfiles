@@ -1,0 +1,20 @@
+
+## NVIM Specific ##
+nvim/tt.*
+nvim/.tests
+nvim/doc/tags
+nvim/debug
+nvim/.repro
+nvim/foo.*
+nvim/*.log
+nvim/data 
+
+### Hypr Specific ###
+hypr/media/anitext
+
+## WezTerm Specific ##
+wezterm.lua.log
+
+## Generic OS/System Junk ##
+.DS_Store
+Thumbs.db

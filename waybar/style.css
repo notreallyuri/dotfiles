@@ -1,0 +1,142 @@
+* {
+  border: none;
+  border-radius: 0;
+  min-height: 0;
+  font-family: Monocraft Nerd Font;
+  font-size: 10px;
+}
+
+
+window#waybar {
+  background-color: transparent;
+}
+
+
+.modules-left {
+  padding: 0 4px 0 0;
+  background: linear-gradient(
+    315deg,
+    transparent 10px,
+    rgba(30, 30, 46, 0.9) 10px
+  )
+}
+
+.modules-center {
+  padding: 0 15px;
+  background-image: 
+        linear-gradient(45deg, transparent 10px, rgba(30, 30, 46, 0.9) 10px),
+        linear-gradient(315deg, transparent 10px, rgba(30, 30, 46, 0.9) 10px);  
+  background-position: left, right;
+  background-size: 51% 100%;
+  background-repeat: no-repeat;
+}
+
+.modules-right {
+  background: linear-gradient(
+    45deg,
+    transparent 10px,
+    rgba(30, 30, 46, 0.9) 10px
+  );
+  padding: 0 0 0 6px;
+  border-radius: 0 0 0 18px;
+}
+
+window#waybar.hidden {
+  opacity: 0.5;
+}
+
+#workspaces {
+  background-color: transparent;
+}
+
+#workspaces button {
+  all: initial;
+  min-width: 0;
+  box-shadow: inset 0 -3px transparent;
+  padding: 0 10px;
+  margin: 6px 3px;
+  border-radius: 18px;
+  color: #cdd6f4;
+}
+
+#workspaces button.active,
+#workspaces button.visible {
+  color: rgb(0, 178, 255);
+}
+
+#workspaces button:hover {
+  color: rgba(0, 178, 255, 0.45);
+}
+
+#workspaces button.urgent {
+  background-color: #f38ba8;
+}
+
+#memory,
+#custom-power,
+#battery,
+#backlight,
+#wireplumber,
+#network,
+#tray {
+  border-radius: 18px;
+  margin: 2px 3px;
+  padding: 6px 10px;
+  color: #fff;
+}
+
+#custom-power {}
+
+#custom-logo {
+  padding: 0 26px;
+  font-size: 12px;
+  color: #fff;
+  background: linear-gradient(
+    315deg,
+    transparent 10px,
+    rgb(0, 178, 255) 10px
+  )
+}
+
+#memory {}
+#backlight {}
+#wireplumber {}
+#network {}
+#custom-power {}
+
+#window {
+  all: initial;
+  background-image: 
+        linear-gradient(45deg, transparent 10px, rgb(0, 178, 255) 10px),
+        linear-gradient(315deg, transparent 10px, rgb(0, 178, 255) 10px);  
+  background-position: left, right;
+  background-size: 51% 100%;
+  background-repeat: no-repeat;
+}
+
+window#waybar.empty #window {
+  opacity: 0;
+}
+
+
+#clock.time, #clock.date {
+  padding: 0 10px;
+  min-width: 80px;
+}
+
+tooltip {
+  padding: 15px;
+  background: transparent;
+}
+
+tooltip label {
+  padding: 5px;
+  padding: 10px 20px;
+  color: #cdd6f4;
+  background-image: 
+    linear-gradient(315deg, transparent 10px, #131822 10px),
+    linear-gradient(135deg, transparent 10px, #131822 10px);
+  background-position: top right, bottom left;
+  background-size: 51% 100%;
+  background-repeat: no-repeat;
+}
