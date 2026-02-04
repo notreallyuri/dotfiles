@@ -1,15 +1,25 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
+
+set -e
 
 LOGO_DIR="$HOME/.config/fastfetch/logos"
+DEFAULT_LOGO="nvim_user"
+
+# Remove leading -- if present
 LOGO_NAME="${1#--}"
 
-if [[ -n "$LOGO_NAME" && -f "$LOGO_DIR/$LOGO_NAME" ]]; then
+# Use default if empty
+LOGO_NAME="${LOGO_NAME:-$DEFAULT_LOGO}"
+
+if [[ -f "$LOGO_DIR/$LOGO_NAME" ]]; then
   fastfetch --logo "$LOGO_DIR/$LOGO_NAME" --logo-type file
 else
-  # Only print error if user actually typed an argument
-  [[ -n "$1" ]] && echo "Error: Logo '$LOGO_NAME' not found in $LOGO_DIR"
+  print "Error: Logo '$LOGO_NAME' not found in $LOGO_DIR"
+  print "Available options:"
 
-  echo "Available options:"
-  find "$LOGO_DIR" -maxdepth 1 -type f -not -name '.*' -printf "  --%f\n" | sort
+  for file in "$LOGO_DIR"/*(.N); do
+    print "  --${file:t}"
+  done | sort
+
   exit 1
 fi
