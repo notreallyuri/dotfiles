@@ -64,7 +64,7 @@ print -P "\n${BLUE}●${NC} ${ACTION_TEXT} configuration folders..."
 
 for folder in "$DOTFILES"/*(/); do
   name="${folder:t}"
-  
+
   case "$name" in
     bin|scripts|.git|fonts) 
       continue
