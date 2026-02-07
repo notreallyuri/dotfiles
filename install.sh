@@ -36,7 +36,7 @@ for folder in "$DOTFILES"/*(/); do
   name="${folder:t}"
   
   case "$name" in
-    bin|scripts|.git) 
+    bin|scripts|.git|fonts) 
       continue
       ;;
     *) 
