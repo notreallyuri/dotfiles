@@ -27,8 +27,6 @@ function M.apply_to_config(config)
 		top = 0,
 	}
 
-	config.window_background_opacity = 0.95
-
 	config.colors = {
 		foreground = "#CDD6F4",
 		background = "#1E1E2E",

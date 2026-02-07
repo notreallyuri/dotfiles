@@ -32,7 +32,7 @@ function M.apply_to_config(config)
 							name = id:upper(),
 							spawn = { cwd = paths[id] or wezterm.home_dir },
 						}),
-						pane
+						panea
 					)
 				end),
 			}),
@@ -44,6 +44,8 @@ function M.apply_to_config(config)
 		{ key = "v", mods = "LEADER", action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
 		{ key = "s", mods = "LEADER", action = act.SplitVertical({ domain = "CurrentPaneDomain" }) },
 		{ key = "x", mods = "LEADER", action = act.CloseCurrentPane({ confirm = true }) },
+		{ key = "k", mods = "CTRL|SHIFT", action = wezterm.action.ScrollByLine(-1) },
+		{ key = "j", mods = "CTRL|SHIFT", action = wezterm.action.ScrollByLine(1) },
 	}
 end
 

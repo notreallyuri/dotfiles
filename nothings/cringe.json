@@ -1,0 +1,17 @@
+{
+  "arch": ["Snort! Snort! Snort!", "I use arch btw :3"],
+  "vn": [
+    "El Psy Kongroo",
+    "Tuturu~",
+    "This is not the first loop",
+    "We’ve met before… in another timeline",
+    "The divergence is unstable",
+    "Sore Wa Chigau Yo",
+    "Sore Wa Chigau Zo",
+    "Whose eyes are those eyes?",
+    "Are you watching me?",
+    "The delusion trigger is active",
+    "This world feels wrong"
+  ],
+  "weights": ["vn", "vn", "arch"]
+}

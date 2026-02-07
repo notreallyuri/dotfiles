@@ -1,25 +1,48 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env lua
 
-set -e
+package.path = os.getenv("HOME") .. "/.config/nothings/?.lua;" .. package.path
 
-LOGO_DIR="$HOME/.config/fastfetch/logos"
-DEFAULT_LOGO="nvim_user"
+local cringe = require("cringe")
 
-# Remove leading -- if present
-LOGO_NAME="${1#--}"
+local LOGO_BASE = os.getenv("HOME") .. "/.config/nothings/ascii"
+local DEFAULT_LOGO = "waifu"
 
-# Use default if empty
-LOGO_NAME="${LOGO_NAME:-$DEFAULT_LOGO}"
+local mini = false
+local logo_name = nil
 
-if [[ -f "$LOGO_DIR/$LOGO_NAME" ]]; then
-  fastfetch --logo "$LOGO_DIR/$LOGO_NAME" --logo-type file
+for _, arg in ipairs(arg) do
+    if arg == "--mini" then
+        mini = true
+    elseif arg:sub(1, 2) == "--" then
+        logo_name = arg:sub(3)
+    end
+end
+
+logo_name = logo_name or DEFAULT_LOGO
+
+local logo_dir = LOGO_BASE
+if mini then
+    logo_dir = logo_dir .. "/mini"
+end
+
+local full_path = logo_dir .. "/" .. logo_name
+
+local file = io.open(full_path, "r")
+
+if file then
+    file:close()
+    local cmd = string.format('fastfetch --logo "%s" --logo-type file', full_path)
+    os.execute(cmd)
 else
-  print "Error: Logo '$LOGO_NAME' not found in $LOGO_DIR"
-  print "Available options:"
-
-  for file in "$LOGO_DIR"/*(.N); do
-    print "  --${file:t}"
-  done | sort
-
-  exit 1
-fi
+    print(string.format("Error: Logo '%s' not found in %s", logo_name, logo_dir))
+    print("Available options:")
+    
+    local available = cringe.list_ascii({ mini = mini })
+    table.sort(available)
+    
+    for _, name in ipairs(available) do
+        print("  --" .. name)
+    end
+    
+    os.exit(1)
+end

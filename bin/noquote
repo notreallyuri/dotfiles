@@ -1,0 +1,7 @@
+#!/usr/bin/env lua
+
+package.path = os.getenv("HOME") .. "/.config/nothings/?.lua;" .. package.path
+
+local cringe = require("cringe")
+
+print(cringe.random_text())
