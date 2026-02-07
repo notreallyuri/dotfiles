@@ -16,21 +16,51 @@ print -P "${BLUE}─────────────────────
 print -P " ${BLUE}\"notreallyuri\"${NC} Dotfiles installer"
 print
 print -P " This script will:"
-print -P "  ${GREEN}• Symlink config folders into ~/.config${NC}"
-print -P "  ${GREEN}• Symlink executable scripts into ~/.local/bin${NC}"
-print -P "  ${YELLOW}• Overwrite existing symlinks if they exist${NC}"
-print -P "  ${RED}• NOT delete any user files${NC}"
+print -P "  ${GREEN}• Install configuration folders into ~/.config${NC}"
+print -P "  ${GREEN}• Install executable scripts into ~/.local/bin${NC}"
+print -P "  ${YELLOW}• Overwrite existing versions if they exist${NC}"
+print -P "  ${RED}• NOT delete any user data files${NC}"
 print
-print -P " Repo will be linked from its current location."
+print -P " Source: $DOTFILES"
+print -P " %B${RED}!!! REMEMBER TO BACKUP YOUR SETTINGS !!!%b"
 print -P "${BLUE}────────────────────────────────────────────${NC}"
 
-read -r "?Continue with installation? [y/N]" reply
-[[ "$reply" != [yY] ]] && echo "Aborted." && exit 0
+print -P " How would you like to install?"
+print -P "  ${BLUE}1)${NC} Symlink (Syncs changes with repo)"
+print -P "  ${BLUE}2)${NC} Copy (Standalone files)"
+print -P "  ${BLUE}3)${NC} Exit"
+print
+
+read -r "?Select an option [1-3] (Default: 1): " choice
+choice="${choice:-1}"
+
+case "$choice" in
+  1)
+    MODE="link"
+    INSTALL_CMD="ln -sf"
+    ACTION_TEXT="Linking"
+    print -P "${YELLOW}Selected: Symlinking${NC}"
+    ;;
+  2)
+    MODE="copy"
+    INSTALL_CMD="cp -Rp"
+    ACTION_TEXT="Copying"
+    print -P "${YELLOW}Selected: Copying${NC}"
+    ;;
+  3)
+    print -P "${RED}Aborted.${NC}"
+    exit 0
+    ;;
+  *)
+    print -P "${RED}Invalid option selected. Aborting.${NC}"
+    exit 1
+    ;;
+esac
 
 mkdir -p "$CONFIG_DIR"
 mkdir -p "$BIN_DST"
 
-print -P "\n${BLUE}●${NC} Linking configuration folders..."
+print -P "\n${BLUE}●${NC} ${ACTION_TEXT} configuration folders..."
 
 for folder in "$DOTFILES"/*(/); do
   name="${folder:t}"
@@ -41,19 +71,20 @@ for folder in "$DOTFILES"/*(/); do
       ;;
     *) 
       print -P "  ${BLUE}→${NC} $name"
-      ln -sf "$folder" "$CONFIG_DIR/$name"
+      rm -rf "$CONFIG_DIR/$name"
+      ${=INSTALL_CMD} "$folder" "$CONFIG_DIR/$name"
       ;;
   esac
 done
 
-print -P "\n${BLUE}●${NC} Linking executables to $BIN_DST..."
+print -P "\n${BLUE}●${NC} ${ACTION_TEXT} executables to $BIN_DST..."
 
 if [[ -d "$DOTFILES/bin" ]]; then
   for file in "$DOTFILES/bin"/*(N); do
     if [[ -f "$file" ]]; then
       name="${file:t}"
       chmod +x "$file"
-      ln -sf "$file" "$BIN_DST/$name"
+      ${=INSTALL_CMD} "$file" "$BIN_DST/$name"
       print -P "  ${BLUE}→${NC} $name"
     fi
   done
@@ -66,7 +97,7 @@ print -P "${GREEN}✔ Installation complete!${NC}"
 print -P "${YELLOW}Checking Environment....${NC}"
 
 local errors=0
-local error_message=()
+local error_messages=()
 
 if [[ ":$PATH:" != *":$BIN_DST:"* ]]; then
   error_messages+=("  ${RED}•${NC} $BIN_DST is not in your PATH.")
