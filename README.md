@@ -8,7 +8,7 @@ Lua-powered CLI tools.
 - Zsh: I made the installer with zsh in mind, don't ask why.
 - Lua: Almost EVERYTHING here uses lua, including the CLI tools.
 - Fastfetch: Used for the nofetch wrapper
-- Nerd Fonts: Most of them can be found inside of ./fonts (To be added)
+- Nerd Fonts: Most of them can be found inside of ./fonts `(To be added)`
 
 ## Structure
 
