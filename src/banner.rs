@@ -1,7 +1,5 @@
 use console::style;
 
-use crate::WARNING;
-
 pub fn show_banner() {
     let title = style("      \"notreallyuri\" Dotfiles Installer            ")
         .bold()
@@ -54,9 +52,8 @@ pub fn show_banner() {
         style("┃").blue()
     );
     println!(
-        "{}  {}  {}      {}",
+        "{}      {}       {}",
         style("┃").blue(),
-        WARNING,
         warning_text,
         style("┃").blue()
     );

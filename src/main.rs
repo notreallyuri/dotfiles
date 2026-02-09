@@ -1,4 +1,4 @@
-use console::{Emoji, Term, style};
+use console::{Term, style};
 use dialoguer::{Confirm, MultiSelect, Select};
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -8,11 +8,6 @@ mod helpers;
 
 use banner::*;
 use helpers::*;
-
-pub static LOOKING_GLASS: Emoji<'_, '_> = Emoji("🔍 ", "");
-pub static LINK: Emoji<'_, '_> = Emoji("🔗 ", "");
-pub static COPY: Emoji<'_, '_> = Emoji("📄 ", "");
-pub static WARNING: Emoji<'_, '_> = Emoji("⚠️  ", "");
 
 struct DotPaths {
     current_dir: PathBuf,
@@ -41,7 +36,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let paths = DotPaths::new()?;
 
-    let options = &["🚀 Install Dotfiles", "🗑️  Remove Dotfiles", "❌ Exit"];
+    let options = &["Install Dotfiles", "Remove Dotfiles", "Exit"];
     let selection = Select::with_theme(&dialoguer::theme::ColorfulTheme::default())
         .with_prompt("What would you like to do?")
         .items(options)
@@ -76,6 +71,8 @@ fn run_install(paths: &DotPaths) -> Result<(), Box<dyn std::error::Error>> {
         return Ok(());
     }
 
+    println!("\n{} Moving config folders...", style("●").blue());
+    println!(" ");
     for &idx in &selections {
         let src = &paths.current_dir.join(&entries[idx]);
         let dst = &paths.config_dir.join(&entries[idx]);
@@ -94,6 +91,7 @@ fn run_remove(paths: &DotPaths) -> Result<(), Box<dyn std::error::Error>> {
         "\n{} Scanning for installed components...",
         style("●").blue()
     );
+    println!(" ");
 
     let mut to_remove = Vec::new();
     let entries = get_config_entries(&paths.current_dir)?;
@@ -119,20 +117,24 @@ fn run_remove(paths: &DotPaths) -> Result<(), Box<dyn std::error::Error>> {
         return Ok(());
     }
 
-    println!("Found {} items to remove.", style(to_remove.len()).yellow());
+    println!(
+        "  Found {} items to remove.",
+        style(to_remove.len()).yellow()
+    );
     if Confirm::new()
-        .with_prompt("Delete these items?")
+        .with_prompt("  Delete these items?")
         .interact()?
     {
+        println!(" ");
         for path in to_remove {
-            println!("  {} Removing {}...", style("×").red(), path.display());
+            println!("  {} {}...", style("× Removing").red(), path.display());
             if path.is_dir() && !path.is_symlink() {
                 fs::remove_dir_all(path)?;
             } else {
                 fs::remove_file(path)?;
             }
         }
-        println!("\n{}", style("✔ Cleanup complete.").green());
+        println!("\n  {}", style("✔ Cleanup complete.").green());
     }
     Ok(())
 }

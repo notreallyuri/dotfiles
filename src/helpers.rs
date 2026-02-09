@@ -1,4 +1,3 @@
-use crate::{COPY, LINK, LOOKING_GLASS};
 use console::style;
 use std::fs;
 use std::os::unix::fs::PermissionsExt;
@@ -22,6 +21,7 @@ pub fn install_binaries(
     let bin_src = root.join("bin");
     if bin_src.exists() {
         println!("\n{} Installing executables...", style("●").blue());
+        println!(" ");
         fs::create_dir_all(dst)?;
         for entry in fs::read_dir(bin_src)? {
             let entry = entry?;
@@ -54,7 +54,7 @@ pub fn copy_dir_all(src: impl AsRef<Path>, dst: impl AsRef<Path>) -> std::io::Re
 
 pub fn process_item(src: &Path, dst: &Path, is_symlink: bool) -> std::io::Result<()> {
     let name = src.file_name().unwrap().to_string_lossy();
-    println!("{} Processing {}...", LOOKING_GLASS, style(&name).cyan());
+    println!("  Processing {}...", style(&name).cyan());
 
     if dst.exists() {
         if dst.is_dir() && !dst.is_symlink() {
@@ -67,13 +67,13 @@ pub fn process_item(src: &Path, dst: &Path, is_symlink: bool) -> std::io::Result
     if is_symlink {
         #[cfg(unix)]
         std::os::unix::fs::symlink(src, dst)?;
-        println!("  {} Linked to {}", LINK, dst.display());
+        println!("      Linked to {}", dst.display());
     } else if src.is_dir() {
         copy_dir_all(src, dst)?;
-        println!("  {} Copied to {}", COPY, dst.display());
+        println!("      Copied to {}", dst.display());
     } else {
         fs::copy(src, dst)?;
-        println!("  {} Copied to {}", COPY, dst.display());
+        println!("      Copied to {}", dst.display());
     }
     Ok(())
 }
