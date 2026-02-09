@@ -45,4 +45,4 @@ A "cringe" generator (or general quote tool).
 ## Installation
 
 1. Copy this repository
-2. Run `install.sh` (Remember to make it executable)
+2. Run the proper `installer` based on your current system. (Works on linux & macOS)
