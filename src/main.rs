@@ -20,7 +20,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     show_banner();
 
-    // Primary Menu
     let options = &["🚀 Install Dotfiles", "🗑️  Remove Dotfiles", "❌ Exit"];
     let selection = Select::with_theme(&dialoguer::theme::ColorfulTheme::default())
         .with_prompt("What would you like to do?")
@@ -88,7 +87,6 @@ fn run_remove() -> Result<(), Box<dyn std::error::Error>> {
     let mut to_remove = Vec::new();
     let entries = get_config_entries(&current_dir)?;
 
-    // Check .config
     for name in entries {
         let target = config_dir.join(&name);
         if target.exists() {
@@ -96,7 +94,6 @@ fn run_remove() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
-    // Check bin
     if let Ok(bin_entries) = fs::read_dir(current_dir.join("bin")) {
         for entry in bin_entries.filter_map(|e| e.ok()) {
             let target = bin_dst.join(entry.file_name());

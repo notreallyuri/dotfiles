@@ -14,7 +14,6 @@ pub fn show_banner() {
         "{}",
         style("┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓").blue()
     );
-    // Manual alignment for the title
     println!("{} {} {}", style("┃").blue(), title, style("┃").blue());
     println!(
         "{}",
