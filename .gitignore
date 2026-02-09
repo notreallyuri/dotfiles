@@ -20,6 +20,6 @@ wezterm.lua.log
 Thumbs.db
 
 
-# Added by cargo
-
+# Cargo related
 /target
+Cargo.lock
