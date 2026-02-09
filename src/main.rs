@@ -1,7 +1,7 @@
 use console::{Emoji, Term, style};
 use dialoguer::{Confirm, MultiSelect, Select};
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 mod banner;
 mod helpers;
@@ -14,11 +14,32 @@ pub static LINK: Emoji<'_, '_> = Emoji("🔗 ", "");
 pub static COPY: Emoji<'_, '_> = Emoji("📄 ", "");
 pub static WARNING: Emoji<'_, '_> = Emoji("⚠️  ", "");
 
+struct DotPaths {
+    current_dir: PathBuf,
+    config_dir: PathBuf,
+    bin_dst: PathBuf,
+}
+
+impl DotPaths {
+    fn new() -> Result<Self, Box<dyn std::error::Error>> {
+        let home = std::env::var("HOME")?;
+        let current_dir = std::env::current_dir()?;
+
+        Ok(Self {
+            current_dir,
+            config_dir: Path::new(&home).join(".config"),
+            bin_dst: Path::new(&home).join(".local/bin"),
+        })
+    }
+}
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let term = Term::stdout();
     term.clear_screen()?;
 
     show_banner();
+
+    let paths = DotPaths::new()?;
 
     let options = &["🚀 Install Dotfiles", "🗑️  Remove Dotfiles", "❌ Exit"];
     let selection = Select::with_theme(&dialoguer::theme::ColorfulTheme::default())
@@ -28,21 +49,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .interact()?;
 
     match selection {
-        0 => run_install()?,
-        1 => run_remove()?,
+        0 => run_install(&paths)?,
+        1 => run_remove(&paths)?,
         _ => println!("{}", style("Goodbye!").cyan()),
     }
 
     Ok(())
 }
 
-fn run_install() -> Result<(), Box<dyn std::error::Error>> {
-    let home = std::env::var("HOME")?;
-    let current_dir = std::env::current_dir()?;
-    let config_dir = Path::new(&home).join(".config");
-    let bin_dst = Path::new(&home).join(".local/bin");
-
-    let entries = get_config_entries(&current_dir)?;
+fn run_install(paths: &DotPaths) -> Result<(), Box<dyn std::error::Error>> {
+    let entries = get_config_entries(&paths.current_dir)?;
     let selections = MultiSelect::with_theme(&dialoguer::theme::ColorfulTheme::default())
         .with_prompt("Select components to install")
         .items(&entries)
@@ -61,42 +77,37 @@ fn run_install() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     for &idx in &selections {
-        let src = current_dir.join(&entries[idx]);
-        let dst = config_dir.join(&entries[idx]);
-        process_item(&src, &dst, mode_idx == 0)?;
+        let src = &paths.current_dir.join(&entries[idx]);
+        let dst = &paths.config_dir.join(&entries[idx]);
+        process_item(src, dst, mode_idx == 0)?;
     }
 
-    install_binaries(&current_dir, &bin_dst, mode_idx == 0)?;
+    install_binaries(&paths.current_dir, &paths.bin_dst, mode_idx == 0)?;
 
     println!("\n{}", style("✔ Installation Complete!").green().bold());
-    check_environment(&bin_dst);
+    check_environment(&paths.bin_dst);
     Ok(())
 }
 
-fn run_remove() -> Result<(), Box<dyn std::error::Error>> {
-    let home = std::env::var("HOME")?;
-    let current_dir = std::env::current_dir()?;
-    let config_dir = Path::new(&home).join(".config");
-    let bin_dst = Path::new(&home).join(".local/bin");
-
+fn run_remove(paths: &DotPaths) -> Result<(), Box<dyn std::error::Error>> {
     println!(
         "\n{} Scanning for installed components...",
         style("●").blue()
     );
 
     let mut to_remove = Vec::new();
-    let entries = get_config_entries(&current_dir)?;
+    let entries = get_config_entries(&paths.current_dir)?;
 
     for name in entries {
-        let target = config_dir.join(&name);
+        let target = paths.config_dir.join(&name);
         if target.exists() {
             to_remove.push(target);
         }
     }
 
-    if let Ok(bin_entries) = fs::read_dir(current_dir.join("bin")) {
+    if let Ok(bin_entries) = fs::read_dir(paths.current_dir.join("bin")) {
         for entry in bin_entries.filter_map(|e| e.ok()) {
-            let target = bin_dst.join(entry.file_name());
+            let target = paths.bin_dst.join(entry.file_name());
             if target.exists() {
                 to_remove.push(target);
             }
