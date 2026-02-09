@@ -1,0 +1,11 @@
+[package]
+name = "dotinstaller"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+clap = { version = "4.0", features = ["derive"] }
+dialoguer = "0.12"
+console = "0.16.2"
+walkdir = "2.4"
+symlink = "0.1"

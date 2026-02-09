@@ -18,3 +18,8 @@ wezterm.lua.log
 ## Generic OS/System Junk ##
 .DS_Store
 Thumbs.db
+
+
+# Added by cargo
+
+/target
