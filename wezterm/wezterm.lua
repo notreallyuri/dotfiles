@@ -1,10 +1,11 @@
-local wezterm = require("wezterm")
-local config = wezterm.config_builder()
+local wzt = require("wezterm")
 
+local config = wzt.config_builder()
+
+local keybinds = require("keybinds")
 local ui = require("ui")
-local keys = require("keys")
 
+keybinds.apply_to_config(config)
 ui.apply_to_config(config)
-keys.apply_to_config(config)
 
 return config

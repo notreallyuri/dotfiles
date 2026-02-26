@@ -7,14 +7,6 @@
  * Rofi Version: 1.7.3
  **/
 
-/*****----- Configuration -----*****/
-configuration {
-	modi:                       "drun";
-  show-icons:                 true;
-  display-drun:               " ";
-	drun-display-format:        "{name}";
-}
-
 /*****----- Global Properties -----*****/
 @import                          "shared/colors.rasi"
 @import                          "shared/fonts.rasi"
@@ -49,7 +41,7 @@ mainbox {
     border-radius:               0px 0px 0px 0px;
     border-color:                @selected;
     background-color:            transparent;
-    children:                    [ "inputbar", "listview" ];
+    children:                    [ "inputbar", "message", "listview" ];
 }
 
 /*****----- Inputbar -----*****/

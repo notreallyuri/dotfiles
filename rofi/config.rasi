@@ -1,1 +1,10 @@
 @import "theme/main.rasi"
+
+
+configuration {
+  modi:                       "drun,run,calc";
+  show-icons:                 true;
+  display-drun:               " ";
+	drun-display-format:        "{name}";
+  calc-display-format:        "";
+}

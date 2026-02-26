@@ -5,24 +5,24 @@ package.path = os.getenv("HOME") .. "/.config/nothings/?.lua;" .. package.path
 local cringe = require("cringe")
 
 local LOGO_BASE = os.getenv("HOME") .. "/.config/nothings/ascii"
-local DEFAULT_LOGO = "waifu"
+local DEFAULT_LOGO = "nvim_user"
 
 local mini = false
 local logo_name = nil
 
 for _, arg in ipairs(arg) do
-    if arg == "--mini" then
-        mini = true
-    elseif arg:sub(1, 2) == "--" then
-        logo_name = arg:sub(3)
-    end
+	if arg == "--mini" then
+		mini = true
+	elseif arg:sub(1, 2) == "--" then
+		logo_name = arg:sub(3)
+	end
 end
 
 logo_name = logo_name or DEFAULT_LOGO
 
 local logo_dir = LOGO_BASE
 if mini then
-    logo_dir = logo_dir .. "/mini"
+	logo_dir = logo_dir .. "/mini"
 end
 
 local full_path = logo_dir .. "/" .. logo_name
@@ -30,19 +30,19 @@ local full_path = logo_dir .. "/" .. logo_name
 local file = io.open(full_path, "r")
 
 if file then
-    file:close()
-    local cmd = string.format('fastfetch --logo "%s" --logo-type file', full_path)
-    os.execute(cmd)
+	file:close()
+	local cmd = string.format('fastfetch --logo "%s" --logo-type file', full_path)
+	os.execute(cmd)
 else
-    print(string.format("Error: Logo '%s' not found in %s", logo_name, logo_dir))
-    print("Available options:")
-    
-    local available = cringe.list_ascii({ mini = mini })
-    table.sort(available)
-    
-    for _, name in ipairs(available) do
-        print("  --" .. name)
-    end
-    
-    os.exit(1)
+	print(string.format("Error: Logo '%s' not found in %s", logo_name, logo_dir))
+	print("Available options:")
+
+	local available = cringe.list_ascii({ mini = mini })
+	table.sort(available)
+
+	for _, name in ipairs(available) do
+		print("  --" .. name)
+	end
+
+	os.exit(1)
 end
