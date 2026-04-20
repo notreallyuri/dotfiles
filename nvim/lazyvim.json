@@ -1,12 +1,10 @@
 {
   "extras": [
-    "lazyvim.plugins.extras.ai.copilot",
     "lazyvim.plugins.extras.coding.mini-surround",
     "lazyvim.plugins.extras.coding.yanky",
     "lazyvim.plugins.extras.editor.dial",
     "lazyvim.plugins.extras.editor.inc-rename",
     "lazyvim.plugins.extras.editor.mini-files",
-    "lazyvim.plugins.extras.formatting.biome",
     "lazyvim.plugins.extras.formatting.prettier",
     "lazyvim.plugins.extras.lang.clangd",
     "lazyvim.plugins.extras.lang.cmake",
@@ -22,6 +20,7 @@
     "lazyvim.plugins.extras.lang.tailwind",
     "lazyvim.plugins.extras.lang.toml",
     "lazyvim.plugins.extras.lang.typescript",
+    "lazyvim.plugins.extras.lang.typescript.biome",
     "lazyvim.plugins.extras.lang.yaml",
     "lazyvim.plugins.extras.linting.eslint",
     "lazyvim.plugins.extras.test.core",

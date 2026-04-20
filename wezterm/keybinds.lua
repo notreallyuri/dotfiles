@@ -1,10 +1,10 @@
 local wzt = require("wezterm")
 local act = wzt.action
 
-local module = {}
+local M = {}
 
-function module.apply_to_config(config)
-	config.leader = { key = "Space", mods = "CTRL", timeout_milliseconds = 1000 }
+function M.apply_to_config(config)
+	config.leader = { key = "Space", mods = "CTRL|SHIFT", timeout_milliseconds = 1000 }
 	config.keys = {
 		{
 			key = "w",
@@ -25,12 +25,12 @@ function module.apply_to_config(config)
 		},
 		{
 			key = "RightArrow",
-			mods = "CTRL|SHIFT",
+			mods = "LEADER",
 			action = act.ActivateTabRelative(1),
 		},
 		{
 			key = "LeftArrow",
-			mods = "CTRL|SHIFT",
+			mods = "LEADER",
 			action = act.ActivateTabRelative(-1),
 		},
 		{
@@ -38,14 +38,44 @@ function module.apply_to_config(config)
 			mods = "LEADER",
 			action = act.PromptInputLine({
 				description = "Enter new name for tab",
-				action = wzt.action_callback(function(window, pane, line)
+				action = wzt.action_callback(function(window, _, line)
 					if line then
 						window:active_tab():set_title(line)
 					end
 				end),
 			}),
 		},
+		{
+			key = '"',
+			mods = "LEADER",
+			action = act.SplitVertical({ domain = "CurrentPaneDomain" }),
+		},
+		{
+			key = "%",
+			mods = "LEADER",
+			action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }),
+		},
+		{
+			key = "h",
+			mods = "LEADER",
+			action = act.ActivatePaneDirection("Left"),
+		},
+		{
+			key = "l",
+			mods = "LEADER",
+			action = act.ActivatePaneDirection("Right"),
+		},
+		{
+			key = "k",
+			mods = "LEADER",
+			action = act.ActivatePaneDirection("Up"),
+		},
+		{
+			key = "j",
+			mods = "LEADER",
+			action = act.ActivatePaneDirection("Down"),
+		},
 	}
 end
 
-return module
+return M

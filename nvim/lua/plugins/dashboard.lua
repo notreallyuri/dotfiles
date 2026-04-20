@@ -1,23 +1,16 @@
 local cringe = require("cringe")
 
 return {
-  "folke/snacks.nvim",
+  "snacks.nvim",
   opts = {
     dashboard = {
       preset = {
         pick = function(cmd, opts)
           return LazyVim.pick(cmd, opts)()
         end,
-        header = cringe.ascii(nil, { mini = vim.o.columns < 100 }),
+        header = cringe.ascii("nvim_user"),
         keys = {
-          {
-            icon = "󰈔 ",
-            key = "f",
-            desc = "Explorer",
-            action = function()
-              require("mini.files").open(vim.uv.cwd(), true)
-            end,
-          },
+          { icon = " ", key = "f", desc = "Find File", action = ":lua Snacks.dashboard.pick('files')" },
           { icon = " ", key = "g", desc = "Find Text", action = ":lua Snacks.dashboard.pick('live_grep')" },
           {
             icon = " ",
@@ -31,8 +24,22 @@ return {
         },
       },
       sections = {
-        { section = "header" },
+        { section = "header", align = "center" },
         { section = "keys", gap = 1, padding = 1 },
+        { pane = 2, icon = " ", title = "Projects", section = "projects", indent = 2, padding = 1 },
+        {
+          pane = 2,
+          icon = " ",
+          title = "Git Status",
+          section = "terminal",
+          enabled = function()
+            return Snacks.git.get_root() ~= nil
+          end,
+          cmd = "git status --short --branch --renames",
+          padding = 1,
+          ttl = 5 * 60,
+          indent = 3,
+        },
         { text = cringe.random_text(), align = "center" },
       },
     },

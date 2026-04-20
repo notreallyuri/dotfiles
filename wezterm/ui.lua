@@ -14,6 +14,10 @@ function M.apply_to_config(config)
 
 	config.use_fancy_tab_bar = false
 	config.hide_tab_bar_if_only_one_tab = true
+	config.front_end = "WebGpu"
+	config.max_fps = 144
+	config.enable_wayland = true
+	config.tab_bar_at_bottom = false
 
 	config.window_padding = {
 		left = 0,
@@ -21,6 +25,8 @@ function M.apply_to_config(config)
 		top = 0,
 		bottom = 0,
 	}
+
+	config.window_background_opacity = 0.9
 end
 
 return M

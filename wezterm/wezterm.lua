@@ -8,4 +8,5 @@ local ui = require("ui")
 keybinds.apply_to_config(config)
 ui.apply_to_config(config)
 
+config.color_scheme = "Noctalia"
 return config
