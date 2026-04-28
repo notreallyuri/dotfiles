@@ -16,7 +16,7 @@ end
 
 local base_path = os.getenv("HOME") .. "/.config/nothings"
 local data_path = base_path .. "/cringe.json"
-local ascii_path = base_path .. "/ascii"
+local ascii_path = base_path .. "/arts"
 
 local function load_json()
 	local file, err = io.open(data_path, "r")

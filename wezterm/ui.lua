@@ -1,7 +1,8 @@
-local wzt = require("wezterm")
+local wzt = require("wezterm") ---@type Wezterm
 
 local M = {}
 
+---@param config Config
 function M.apply_to_config(config)
 	config.default_prog = { "zsh", "-l" }
 

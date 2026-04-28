@@ -1,4 +1,4 @@
-local wzt = require("wezterm")
+local wzt = require("wezterm") ---@type Wezterm
 
 local config = wzt.config_builder()
 

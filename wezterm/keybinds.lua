@@ -1,8 +1,9 @@
-local wzt = require("wezterm")
+local wzt = require("wezterm") ---@type Wezterm
 local act = wzt.action
 
 local M = {}
 
+---@param config Config
 function M.apply_to_config(config)
 	config.leader = { key = "Space", mods = "CTRL|SHIFT", timeout_milliseconds = 1000 }
 	config.keys = {
