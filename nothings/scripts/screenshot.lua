@@ -113,6 +113,9 @@ local function process_image(act, file)
 		else
 			notify("System Error", "Failed to run curl command.")
 		end
+	else
+		os.execute('wl-copy < "' .. file .. '"')
+		notify("Captured", "Saved to " .. file)
 	end
 end
 
