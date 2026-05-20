@@ -1,3 +1,7 @@
-local vars = require("variables")
-
-hl.setup({})
+require("config.hardware")
+require("config.ui")
+require("config.env")
+require("config.rules")
+require("config.keybinds")
+require("config.behavior")
+require("config.startup")

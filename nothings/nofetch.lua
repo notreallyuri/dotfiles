@@ -16,7 +16,7 @@ return {
 		{ type = "gpu_driver", label = "Driver", separator = "", format = "│ {label:red}  │ {1}" },
 		{
 			type = "memory",
-			label = "Mem",
+			label = "RAM",
 			separator = "",
 			format = "│ {label:magenta}     │ {1} / {2} ({3:dynamic})",
 			thresholds = { 60, 80 },
@@ -27,6 +27,14 @@ return {
 			separator = "",
 			format = "│ {label:magenta}    │ {1} / {2} ({3:dynamic})",
 			thresholds = { 60, 80 },
+		},
+		{
+			type = "disk",
+			label = "Games",
+			separator = "",
+			format = "│ {label:magenta}   │ {1} / {2} ({3:dynamic})",
+			thresholds = { 60, 80 },
+			path = "/home/yuri/Games",
 		},
 		{ type = "os_age", label = "Age", separator = "", format = "│ {label:blue}     │ {1}" },
 		{ type = "uptime", label = "Uptime", separator = "", format = "│ {label:blue}  │ {1}" },

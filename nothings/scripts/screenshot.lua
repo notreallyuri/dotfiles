@@ -18,8 +18,12 @@ local date = os.date("%Y-%m-%d-%H-%M-%S")
 local file_img = dir_img .. "/" .. date .. ".png"
 local file_vid = dir_vid .. "/" .. date .. ".mp4"
 
-local function notify(title, msg)
-	os.execute(string.format('notify-send "%s" "%s"', title, msg))
+local function notify(title, msg, icon)
+	if icon then
+		os.execute(string.format('notify-send -i "%s" "%s" "%s"', icon, title, msg))
+	else
+		os.execute(string.format('notify-send "%s" "%s"', title, msg))
+	end
 end
 
 local function get_active_window_geom()
@@ -85,12 +89,12 @@ local function process_image(act, file)
 
 	if act == "ocr" then
 		if os.execute(string.format('tesseract "%s" - | wl-copy', file)) then
-			notify("OCR Complete", "Text copied to clipboard.")
+			notify("OCR Complete", "Text copied to clipboard.", file)
 		else
 			notify("OCR Failed", "Make sure tesseract is installed.")
 		end
 	elseif act == "search" then
-		notify("Searching...", "Uploading image to Catbox.moe")
+		notify("Searching...", "Uploading image to Catbox.moe", file)
 
 		local cmd = 'curl -sS -F "reqtype=fileupload" -F "fileToUpload=@' .. file .. '" https://catbox.moe/user/api.php'
 		local handle = io.popen(cmd)
@@ -115,7 +119,7 @@ local function process_image(act, file)
 		end
 	else
 		os.execute('wl-copy < "' .. file .. '"')
-		notify("Captured", "Saved to " .. file)
+		notify("Captured", "Saved to " .. file, file) -- Image path passed here!
 	end
 end
 

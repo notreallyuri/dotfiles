@@ -13,14 +13,18 @@ return {
         end,
       }
 
-      opts.formatters_by_ft = opts.formatters_by_ft or {}
-
-      local javascript_fallback = { "biome-check", "prettier", stop_after_first = true }
-
       opts.formatters.prettier = {
         prepend_args = { "--trailing-comma", "none" },
       }
 
+      opts.formatters.leptosfmt = {
+        command = "leptosfmt",
+        args = { "--stdin", "--rustfmt" },
+      }
+
+      opts.formatters_by_ft = opts.formatters_by_ft or {}
+
+      local javascript_fallback = { "biome-check", "prettier", stop_after_first = true }
       opts.formatters_by_ft["javascript"] = javascript_fallback
       opts.formatters_by_ft["typescript"] = javascript_fallback
       opts.formatters_by_ft["javascriptreact"] = javascript_fallback
@@ -30,6 +34,8 @@ return {
 
       opts.formatters_by_ft["html"] = { "prettier" }
       opts.formatters_by_ft["css"] = { "prettier" }
+
+      opts.formatters_by_ft["rust"] = { "leptosfmt" }
     end,
   },
 }
