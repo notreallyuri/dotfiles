@@ -1,39 +1,41 @@
 return {
-  {
-    "neovim/nvim-lspconfig",
-    opts = {
-      servers = {
-        rust_analyzer = {
-          settings = {
-            ["rust-analyzer"] = {
-              procMacro = {
-                ignored = {
-                  ["leptos_macro"] = { "server" },
-                },
-              },
+  "neovim/nvim-lspconfig",
+  dependencies = {
+    "williamboman/mason.nvim",
+    "williamboman/mason-lspconfig.nvim",
+  },
+  config = function()
+    require("mason").setup()
+    require("mason-lspconfig").setup({
+      ensure_installed = { "lua_ls", "ts_ls", "tailwindcss" },
+      automatic_installation = true,
+    })
+
+    vim.lsp.config("lua_ls", {})
+    vim.lsp.config("ts_ls", {})
+    vim.lsp.config("tailwindcss", {
+      settings = {
+        tailwindCSS = {
+          experimental = {
+            classRegex = {
+              { [[class="([^"]*)"]] },
+              { [[class=move\s*\|\|\s*\{?"?([^"}\)]*)"?\}?]] },
+              { [[cn!\(([^)]*)\)]],                          [["([^"]*)"]] },
+              { [[cn!\s*\(([^)]*)\)]] },
             },
           },
-        },
-        tailwindcss = {
-          filetypes_include = { "rust" },
-          settings = {
-            tailwindCSS = {
-              includeLanguages = {
-                rust = "html",
-              },
-              experimental = {
-                classAttributes = {
-                  "class",
-                  "class:",
-                },
-                classRegex = {
-                  { "cn!?\\s*\\(([^)]*)\\)", "[\"']([^\"']*)[\"']" },
-                },
-              },
-            },
+          includeLanguages = {
+            rust = "html",
           },
         },
       },
-    },
-  },
+      filetypes = {
+        "html", "css", "typescript", "typescriptreact",
+        "javascript", "javascriptreact",
+        "rust",
+      },
+    })
+
+    vim.lsp.enable({ "lua_ls", "ts_ls", "tailwindcss" })
+  end,
 }
