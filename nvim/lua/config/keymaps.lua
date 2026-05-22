@@ -13,7 +13,10 @@ vim.keymap.set("n", "<leader>wj", "<C-w>j", { desc = "Go to bottom split" })
 vim.keymap.set("n", "<leader>wk", "<C-w>k", { desc = "Go to top split" })
 vim.keymap.set("n", "<leader>wh", "<C-w>h", { desc = "Go to right split" })
 
-
+vim.keymap.set("n", "<leader>uh", function()
+  vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+  vim.notify("Inlay hints: " .. tostring(vim.lsp.inlay_hint.is_enabled()))
+end, { desc = "Toggle inlay hints" })
 vim.keymap.set("n", "<leader>ut", function()
   Snacks.picker.colorschemes({
     confirm = function(picker, item)
@@ -32,7 +35,6 @@ vim.keymap.set("n", "<leader>ut", function()
     end,
   })
 end, { desc = "Find theme" })
-
 vim.keymap.set("n", "<leader>uc", function()
   local data_path = vim.fn.stdpath("data") .. "/colorscheme"
   local theme = "catppuccin"

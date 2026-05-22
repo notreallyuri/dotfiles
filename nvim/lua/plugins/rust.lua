@@ -13,6 +13,11 @@ return {
     lazy = false,
     config = function()
       vim.g.rustaceanvim = {
+        tools = {
+          inlay_hints = {
+            auto = false,
+          },
+        },
         server = {
           on_attach = function(_, bufnr)
             vim.keymap.set("n", "<leader>cR", function()
@@ -24,6 +29,14 @@ return {
           end,
           default_settings = {
             ["rust-analyzer"] = {
+              inlayHints = {
+                bindingModeHints = { enable = true },
+                chainingHints = { enable = true },
+                closingBraceHints = { enable = true },
+                closureReturnTypeHints = { enable = { always = true } },
+                parameterHints = { enable = true },
+                typeHints = { enable = true },
+              },
               cargo = {
                 allFeatures = true,
                 loadOutDirsFromCheck = true,

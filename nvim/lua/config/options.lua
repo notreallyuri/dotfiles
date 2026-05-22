@@ -39,7 +39,7 @@ vim.opt.smoothscroll = true
 vim.opt.splitbelow = true
 vim.opt.splitright = true
 vim.opt.termguicolors = true
-vim.opt.timeoutlen = 300 -- triggers which-key faster
+vim.opt.timeoutlen = 300
 vim.opt.undofile = true
 vim.opt.undolevels = 10000
 vim.opt.updatetime = 200
@@ -48,4 +48,5 @@ vim.opt.winminwidth = 5
 vim.opt.wrap = false
 vim.opt.completeopt = "menu,menuone,noselect"
 
+vim.g.deprecation_warnings = false
 vim.g.markdown_recommended_style = 0

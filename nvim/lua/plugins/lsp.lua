@@ -37,5 +37,6 @@ return {
     })
 
     vim.lsp.enable({ "lua_ls", "ts_ls", "tailwindcss" })
+    vim.lsp.enable("rust_analyzer", false)
   end,
 }
