@@ -1,4 +1,4 @@
-local wzt = require("wezterm") ---@type Wezterm
+local wzt = require("wezterm")
 
 local config = wzt.config_builder()
 
@@ -9,4 +9,5 @@ keybinds.apply_to_config(config)
 ui.apply_to_config(config)
 
 config.color_scheme = "Noctalia"
+
 return config
