@@ -6,7 +6,7 @@ return {
     opts = {
       ensure_installed = {
         "lua", "rust", "ron", "toml",
-        "typescript", "javascript", "html", "css",
+        "typescript", "javascript", "tsx", "html", "css",
         "regex", "bash", "markdown", "markdown_inline", "vim", "vimdoc",
       },
       highlight = { enable = true },

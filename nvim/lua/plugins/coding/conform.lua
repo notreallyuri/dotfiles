@@ -9,6 +9,7 @@ return {
       typescriptreact = { "prettier" },
       html = { "prettier" },
       css = { "prettier" },
+      markdown = { "markdownlint-cli2", "markdown-toc" }
     },
     format_on_save = {
       timeout_ms = 500,

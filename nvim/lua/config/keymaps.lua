@@ -13,19 +13,54 @@ vim.keymap.set("n", "<leader>wj", "<C-w>j", { desc = "Go to bottom split" })
 vim.keymap.set("n", "<leader>wk", "<C-w>k", { desc = "Go to top split" })
 vim.keymap.set("n", "<leader>wh", "<C-w>h", { desc = "Go to right split" })
 
+vim.keymap.set("i", "<C-e>", function()
+  local line = vim.api.nvim_get_current_line()
+  local col = vim.api.nvim_win_get_cursor(0)[2]
+  local before = line:sub(1, col)
+
+  local tag = nil
+  for t in before:gmatch("<([%w%-]+)[^>]->") do
+    local full_tag = before:match("<" .. t .. "[^>]->")
+    if full_tag and not full_tag:match("/>%s*$") then
+      tag = t
+    end
+  end
+
+  if tag then
+    return "</" .. tag .. ">"
+  end
+  return "<C-e>"
+end, { expr = true, desc = "Close HTML tag" })
+
 vim.keymap.set("n", "<leader>uh", function()
   vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
   vim.notify("Inlay hints: " .. tostring(vim.lsp.inlay_hint.is_enabled()))
 end, { desc = "Toggle inlay hints" })
+
 vim.keymap.set("n", "<leader>ut", function()
   Snacks.picker.colorschemes({
     confirm = function(picker, item)
       picker:close()
       if item then
-        local f = io.open(vim.fn.stdpath("data") .. "/colorscheme", "w")
-        if f then
-          f:write(item.text)
-          f:close()
+        local data_path = vim.fn.stdpath("data") .. "/colorscheme"
+        local clear_state = false
+
+        local f_in = io.open(data_path, "r")
+        if f_in then
+          for line in f_in:lines() do
+            local key, value = line:match("^(%w+)%s*=%s*(.-)%s*$")
+            if key == "clear" then
+              clear_state = value == "true"
+            end
+          end
+          f_in:close()
+        end
+
+        local f_out = io.open(data_path, "w")
+        if f_out then
+          f_out:write("theme = " .. item.text .. "\n")
+          f_out:write("clear = " .. tostring(clear_state) .. "\n")
+          f_out:close()
         end
 
         vim.defer_fn(function()
@@ -35,6 +70,7 @@ vim.keymap.set("n", "<leader>ut", function()
     end,
   })
 end, { desc = "Find theme" })
+
 vim.keymap.set("n", "<leader>uc", function()
   local data_path = vim.fn.stdpath("data") .. "/colorscheme"
   local theme = "catppuccin"
