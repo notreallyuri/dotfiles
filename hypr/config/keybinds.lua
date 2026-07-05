@@ -13,9 +13,9 @@ hl.bind(kb.copy_color, hl.dsp.exec_cmd(apps.colorpicker .. " -a"))
 hl.bind(kb.lock, hl.dsp.exec_cmd(apps.lock))
 hl.bind(kb.calc, hl.dsp.exec_cmd(apps.calc))
 
-hl.bind("Print", hl.dsp.exec_cmd(apps.screenshot .. " region"))
-hl.bind("SUPER + Print", hl.dsp.exec_cmd(apps.screenshot .. " full"))
-hl.bind("SUPER + SHIFT + G", hl.dsp.exec_cmd(apps.screenshot .. " region search"))
+hl.bind("Print", hl.dsp.exec_cmd(apps.ipc .. "screenshot-region"))
+hl.bind("SUPER + Print", hl.dsp.exec_cmd(apps.ipc .. "screenshot-fullscreen"))
+hl.bind("SUPER + SHIFT + G", hl.dsp.exec_cmd(""))
 hl.bind("SUPER + SHIFT + S", hl.dsp.exec_cmd(apps.screenshot .. " region ocr"))
 hl.bind("SUPER + SHIFT + R", hl.dsp.exec_cmd(apps.screenshot .. " record"))
 hl.bind("SUPER + SHIFT + ALT + R", hl.dsp.exec_cmd(apps.screenshot .. " recordsound"))
@@ -44,16 +44,16 @@ for i = 1, 10 do
   hl.bind(kb.move_win .. " + " .. key, hl.dsp.window.move({ workspace = ws, monitor = "current" }))
 end
 
-hl.bind("SUPER + mouse:272", hl.dsp.window.drag())
-hl.bind("SUPER + mouse:273", hl.dsp.window.resize())
+hl.bind("SUPER + mouse:272", hl.dsp.window.drag(), { mouse = true })
+hl.bind("SUPER + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
 hl.bind(kb.go_to .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
 hl.bind(kb.go_to .. " + mouse_up", hl.dsp.focus({ workspace = "e-1" }))
 
-hl.bind("SUPER + R", hl.dsp.exec_cmd(apps.ipc .. " launcher toggle"))
-hl.bind("SUPER + S", hl.dsp.exec_cmd(apps.ipc .. " controlCenter toggle"))
-hl.bind("SUPER + comma", hl.dsp.exec_cmd(apps.ipc .. " settings toggle"))
-hl.bind("SUPER + W", hl.dsp.exec_cmd(apps.ipc .. " wallpaper toggle"))
+hl.bind("SUPER + R", hl.dsp.exec_cmd(apps.ipc .. "panel-toggle launcher"))
+hl.bind("SUPER + S", hl.dsp.exec_cmd(apps.ipc .. "panel-toggle control-center"))
+hl.bind("SUPER + comma", hl.dsp.exec_cmd(apps.ipc .. "settings-toggle"))
+hl.bind("SUPER + W", hl.dsp.exec_cmd(apps.ipc .. "panel-toggle wallpaper"))
 
 hl.bind(kb.comm, hl.dsp.workspace.toggle_special("comm"))
 hl.bind(kb.music, hl.dsp.workspace.toggle_special("music"))

@@ -50,3 +50,6 @@ vim.opt.completeopt = "menu,menuone,noselect"
 
 vim.g.deprecation_warnings = false
 vim.g.markdown_recommended_style = 0
+
+-- routes copilot suggestions into blink's completion menu instead of ghost text (read by plugins/ai/copilot.lua)
+vim.g.ai_cmp = true

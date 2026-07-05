@@ -56,17 +56,18 @@ return {
     lazy = true,
     opts = { style = "moon" },
   },
-  { "ellisonleao/gruvbox.nvim", priority = 1000, opts = {} },
+  { "ellisonleao/gruvbox.nvim", lazy = true, opts = {} },
   {
     "thedenisnikulin/vim-cyberpunk",
+    lazy = true,
   },
   {
     "rose-pine/neovim",
     name = "rose-pine",
+    lazy = true,
   },
   {
     "water-sucks/darkrose.nvim",
     lazy = true,
-    priority = 1000,
   },
 }

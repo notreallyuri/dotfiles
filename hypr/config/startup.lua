@@ -6,12 +6,12 @@ local startup_cmds = {
 
   "xrandr --output DP-1 --primary",
   "hyprctl setcursor Bibata-Original-Classic 24",
-  "qs -c noctalia-shell",
+  "noctalia",
   "mpris-proxy",
 
   "[workspace special:comm silent] discord",
-  "[workspace special:music silent] cider",
-  "[workspace special:browser silent] zen-browser",
+  "[workspace special:music silent] cider --ozone-platform=x11 %U",
+  "[workspace special:browser silent] helium-browser",
 }
 
 hl.on("hyprland.start", function()

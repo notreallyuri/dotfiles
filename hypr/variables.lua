@@ -12,7 +12,7 @@ M.apps = {
   colorpicker = "hyprpicker",
   lock = "hyprlock",
   calc = "rofi -show calc",
-  ipc = "qs -c noctalia-shell ipc call",
+  ipc = "noctalia msg ",
   screenshot = home .. "/.config/nothings/scripts/screenshot.lua",
 }
 

@@ -1,87 +1,42 @@
 return {
   "neovim/nvim-lspconfig",
-  dependencies = {
-    "williamboman/mason.nvim",
-    "williamboman/mason-lspconfig.nvim",
-    "WhoIsSethDaniel/mason-tool-installer.nvim",
-  },
   config = function()
-    require("mason").setup()
-    require("mason-lspconfig").setup({
-      ensure_installed = { "lua_ls", "ts_ls", "tailwindcss", "marksman" },
-      automatic_installation = true,
-    })
-
-    require("mason-tool-installer").setup({
-      ensure_installed = {
-        "markdownlint-cli2",
-        "markdown-toc"
-      },
-    })
-
+    vim.lsp.config("jdtls", {})
     vim.lsp.config("lua_ls", {})
-    vim.lsp.config("vtsls", {
-      settings = {
-        typescript = {
-          updateImportsOnFileMove = { enabled = "always" },
-          suggest = { completeFunctionCalls = true },
-          inlayHints = {
-            enumMemberValues = { enabled = true },
-            functionLikeReturnTypes = { enabled = true },
-            parameterNames = { enabled = "literals" },
-            parameterTypes = { enabled = true },
-            propertyDeclarationTypes = { enabled = true },
-            variableTypes = { enabled = false },
-          },
-        },
-        javascript = {
-          updateImportsOnFileMove = { enabled = "always" },
-          suggest = { completeFunctionCalls = true },
-          inlayHints = {
-            enumMemberValues = { enabled = true },
-            functionLikeReturnTypes = { enabled = true },
-            parameterNames = { enabled = "literals" },
-            parameterTypes = { enabled = true },
-            propertyDeclarationTypes = { enabled = true },
-            variableTypes = { enabled = false },
-          },
-        },
-        vtsls = {
-          enableMoveToFileCodeAction = true,
-          autoUseWorkspaceTsdk = true,
-          experimental = {
-            completion = {
-              enableServerSideFuzzyMatch = true,
-            },
-          },
-        },
-      },
-    })
-    vim.lsp.config("tailwindcss", {
-      settings = {
-        tailwindCSS = {
-          experimental = {
-            classRegex = {
-              { [[class="([^"]*)"]] },
-              { [[class=move\s*\|\|\s*\{?"?([^"}\)]*)"?\}?]] },
-              { [[cn!\(([^)]*)\)]],                          [["([^"]*)"]] },
-              { [[cn!\s*\(([^)]*)\)]] },
-            },
-          },
-          includeLanguages = {
-            rust = "html",
-          },
-        },
-      },
-      filetypes = {
-        "html", "css", "typescript", "typescriptreact",
-        "javascript", "javascriptreact",
-        "rust"
-      },
-    })
+    vim.lsp.config("biome", {})
     vim.lsp.config("marksman", {})
 
-    vim.lsp.enable({ "lua_ls", "vtsls", "tailwindcss", "marksman" })
+    vim.lsp.config("vtsls", require("plugins.lsp.settings.vtsls"))
+    vim.lsp.config("tailwindcss", require("plugins.lsp.settings.tailwindcss"))
+    vim.lsp.config("clangd", require("plugins.lsp.settings.clangd"))
+    vim.lsp.config("eslint", { settings = { workingDirectories = { mode = "auto" } } })
+
+    vim.lsp.config("omnisharp", {
+      cmd = { "omnisharp" },
+      handlers = {
+        ["textDocument/definition"] = function(...)
+          return require("omnisharp_extended").handler(...)
+        end,
+      },
+      enable_roslyn_analyzers = true,
+      organize_imports_on_format = true,
+      enable_import_completion = true,
+    })
+
+    vim.api.nvim_create_autocmd("LspAttach", {
+      callback = function(args)
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+        if client and client.name == "clangd" then
+          vim.keymap.set("n", "<leader>ch", "<cmd>LspClangdSwitchSourceHeader<cr>", {
+            buffer = args.buf,
+            desc = "Switch Source/Header (C/C++)",
+          })
+        end
+      end,
+    })
+
+    vim.lsp.enable({ "lua_ls", "vtsls", "biome", "eslint", "tailwindcss", "marksman", "clangd", "omnisharp" })
     vim.lsp.enable("rust_analyzer", false)
+    vim.lsp.enable("copilot", false)
   end,
 }

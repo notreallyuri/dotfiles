@@ -11,7 +11,11 @@ return {
       { "<leader>c", group = "code" },
       { "<leader>b", group = "buffer" },
       { "<leader>x", group = "diagnostics" },
-      { "<leader>w", group = "window" }
+      { "<leader>w", group = "window" },
+      { "<leader>d", group = "debug" },
+      { "<leader>n", group = "npm" },
+      { "<leader>t", group = "test" },
+      { "<leader>gh", group = "hunk" }
     },
     win = {
       border = "single",

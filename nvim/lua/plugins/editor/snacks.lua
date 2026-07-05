@@ -16,6 +16,20 @@ return {
     bigfile = { enabled = true },
     statuscolumn = { enabled = true },
     image = { enabled = true },
-    quickfile = { enabled = true }
-  }
+    quickfile = { enabled = true },
+    terminal = { enabled = true },
+  },
+  keys = {
+    {
+      "<leader>gg",
+      function()
+        if vim.fn.executable("lazygit") == 0 then
+          vim.notify("lazygit not found on $PATH", vim.log.levels.WARN)
+          return
+        end
+        Snacks.terminal.open("lazygit", { win = { position = "float", width = 0.9, height = 0.9 } })
+      end,
+      desc = "Lazygit",
+    },
+  },
 }

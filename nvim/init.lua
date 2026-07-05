@@ -30,6 +30,7 @@ require("lazy").setup({
     { import = "plugins.editor" },
     { import = "plugins.lsp" },
     { import = "plugins.coding" },
+    { import = "plugins.ai" }
   },
   checker = { enabled = true }
 })
