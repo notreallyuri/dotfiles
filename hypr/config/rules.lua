@@ -34,9 +34,10 @@ hl.layer_rule({
 })
 
 hl.window_rule({
-  match = { class = "dev.noctalia.Noctalia.Settings" },
+  match = { class = "dev.noctalia.Noctalia", title = "Noctalia Settings" },
   float = true,
-  center = true
+  center = true,
+  size = "800 800",
 })
 
 -- ==========================================
@@ -48,7 +49,7 @@ hl.window_rule({
 })
 
 hl.window_rule({
-  match = { class = "^(cider|spotify)$" },
+  match = { class = "^(cider|Spotify)$" },
   workspace = "special:music",
 })
 
@@ -168,7 +169,7 @@ hl.window_rule({
 
 hl.window_rule({
   match = { tag = "games" },
-  workspace = "5",
+  workspace = "special:gaming",
   no_blur = true,
   fullscreen = true,
   confine_pointer = true,

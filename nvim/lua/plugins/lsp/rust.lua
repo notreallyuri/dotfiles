@@ -38,9 +38,13 @@ return {
                 typeHints = { enable = true },
               },
               cargo = {
-                allFeatures = true,
-                loadOutDirsFromCheck = true,
+                targetDir = true,
                 buildScripts = { enable = true },
+              },
+              check = {
+                command = "check",
+                allTargets = false,
+                workspace = true,
               },
               checkOnSave = true,
               procMacro = {

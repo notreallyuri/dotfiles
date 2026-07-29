@@ -1,10 +1,9 @@
+local home = os.getenv("HOME")
+
 local M = {}
 
-local home = os.getenv("HOME")
-local user = os.getenv("USER")
-
 M.apps = {
-  terminal = "ghostty",
+  terminal = "wezterm",
   browser = "zen-browser",
   filemgr = "yazi",
   menu = "rofi -show drun",
@@ -16,33 +15,50 @@ M.apps = {
   screenshot = home .. "/.config/nothings/scripts/screenshot.lua",
 }
 
-M.media = {
-  wallpaper = home .. "/.config/hypr/media/winpp.jpg",
-  wallpaper2 = home .. "/.config/hypr/media/mikupp.png",
-  pfp = "/var/lib/AccountsService/icons/" .. (user or ""),
-  anifile = home .. "/.config/hypr/media/anitext",
-}
-
 M.kb = {
   move_win = "SUPER + SHIFT",
   go_to = "SUPER",
   resize = "SUPER + ALT",
 
   terminal = "SUPER + Q",
-  browser = "SUPER + B",
   filemgr = "SUPER + E",
   menu = "SUPER + R",
   copy_color = "SUPER + SHIFT + C",
   lock = "SUPER + P",
   calc = "SUPER + T",
 
-  float_toggle = "SUPER + G",
+  float_toggle = "SUPER + H",
   fullscreen = "SUPER + F",
   close = "SUPER + C",
   split = "SUPER + J",
 
+  shot_region = "Print",
+  shot_screen = "SUPER + Print",
+  shot_edit = "SHIFT + Print",
+  shot_window = "ALT + Print",
+  shot_all = "CTRL + Print",
+  shot_ocr = "SUPER + SHIFT + S",
+  shot_search = "SUPER + SHIFT + A",
+
+  record = "SUPER + SHIFT + R",
+  record_audio = "SUPER + SHIFT + ALT + R",
+  record_pause = "SUPER + ALT + R",
+  replay = "SUPER + SHIFT + F12",
+  replay_save = "SUPER + F12",
+
+  control_center = "SUPER + S",
+  settings = "SUPER + comma",
+  wallpaper = "SUPER + W",
+
+  browser = "SUPER + B",
+  games = "SUPER + G",
   comm = "SUPER + D",
   music = "SUPER + M",
+
+  move_browser = "SUPER + SHIFT + B",
+  move_games = "SUPER + SHIFT + G",
+  move_comm = "SUPER + SHIFT + D",
+  move_music = "SUPER + SHIFT + M",
 
   move_mouse = "SUPER + mouse:272",
   resize_mouse = "SUPER + mouse:273",

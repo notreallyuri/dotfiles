@@ -12,7 +12,7 @@ hl.env("XDG_SESSION_DESKTOP", "Hyprland")
 -- #### Cursor ####
 hl.env("XCURSOR_SIZE", "24")
 hl.env("HYPRCURSOR_SIZE", "24")
-hl.env("XCURSOR_THEME", "BreezeX-RoséPine")
+hl.env("XCURSOR_THEME", "Bibata-Modern-Classic")
 
 -- #### Theme ####
 --hl.env("QT_QPA_PLATFORM", "wayland;xcb")

@@ -5,13 +5,13 @@ local startup_cmds = {
   "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1",
 
   "xrandr --output DP-1 --primary",
-  "hyprctl setcursor Bibata-Original-Classic 24",
+  "hyprctl setcursor Bibata-Modern-Classic 24",
   "noctalia",
   "mpris-proxy",
 
   "[workspace special:comm silent] discord",
   "[workspace special:music silent] cider --ozone-platform=x11 %U",
-  "[workspace special:browser silent] helium-browser",
+  "[workspace special:browser silent] zen-browser",
 }
 
 hl.on("hyprland.start", function()
