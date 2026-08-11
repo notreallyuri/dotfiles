@@ -12,7 +12,7 @@ M.apps = {
   lock = "hyprlock",
   calc = "rofi -show calc",
   ipc = "noctalia msg ",
-  screenshot = home .. "/.config/nothings/scripts/screenshot.lua",
+  noshot = home .. "/.config/nothings/scripts/noshot.lua",
 }
 
 M.kb = {
