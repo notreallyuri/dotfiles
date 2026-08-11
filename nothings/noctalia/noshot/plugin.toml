@@ -1,0 +1,280 @@
+id           = "nothings/noshot"
+name         = "Noshot"
+version      = "0.3.0"
+plugin_api   = 14
+author       = "nothings"
+license      = "MIT"
+icon         = "camera"
+description  = "Screenshots, OCR, reverse search and screen recording, from the bar, the launcher or the CLI"
+tags         = ["screenshot", "recording", "hyprland"]
+dependencies = ["grim", "slurp", "satty", "gpu-screen-recorder", "tesseract", "hyprpicker"]
+
+# ---------------------------------------------------------------------------
+# the script itself
+# ---------------------------------------------------------------------------
+
+[[setting]]
+key             = "script_path"
+type            = "file"
+label_key       = "settings.script_path.label"
+description_key = "settings.script_path.description"
+default         = ""
+extensions      = [".lua"]
+
+[[setting]]
+key             = "sync_settings"
+type            = "bool"
+label_key       = "settings.sync_settings.label"
+description_key = "settings.sync_settings.description"
+default         = true
+
+# ---------------------------------------------------------------------------
+# this panel only — never reaches the script
+# ---------------------------------------------------------------------------
+
+[[setting]]
+key             = "capture_delay"
+type            = "int"
+label_key       = "settings.capture_delay.label"
+description_key = "settings.capture_delay.description"
+default         = 5
+min             = 1
+max             = 60
+step            = 1
+
+[[setting]]
+key             = "record_target"
+type            = "select"
+label_key       = "settings.record_target.label"
+description_key = "settings.record_target.description"
+default         = "monitor"
+options = [
+  { value = "monitor", label_key = "settings.record_target.options.monitor" },
+  { value = "region", label_key = "settings.record_target.options.region" },
+  { value = "window", label_key = "settings.record_target.options.window" },
+]
+
+# ---------------------------------------------------------------------------
+# Forwarded to the script while the sync above is on, which makes these the
+# values noshot runs with — a keybind that never touches Noctalia included.
+#
+# The defaults below mirror the ones in noshot/config.lua; keep them in step.
+# ---------------------------------------------------------------------------
+
+[[setting]]
+key             = "image_dir"
+type            = "folder"
+label_key       = "settings.image_dir.label"
+description_key = "settings.image_dir.description"
+default         = "~/Pictures/Screenshots"
+visible_when    = { key = "sync_settings", values = ["true"] }
+
+[[setting]]
+key             = "video_dir"
+type            = "folder"
+label_key       = "settings.video_dir.label"
+description_key = "settings.video_dir.description"
+default         = "~/Videos/Recordings"
+visible_when    = { key = "sync_settings", values = ["true"] }
+
+[[setting]]
+key             = "name_format"
+type            = "string"
+label_key       = "settings.name_format.label"
+description_key = "settings.name_format.description"
+placeholder_key = "settings.name_format.placeholder"
+default         = "%Y-%m-%d_%H-%M-%S"
+visible_when    = { key = "sync_settings", values = ["true"] }
+
+[[setting]]
+key             = "browser"
+type            = "string"
+label_key       = "settings.browser.label"
+description_key = "settings.browser.description"
+placeholder_key = "settings.browser.placeholder"
+default         = "zen-browser"
+visible_when    = { key = "sync_settings", values = ["true"] }
+
+[[setting]]
+key             = "viewer"
+type            = "string"
+label_key       = "settings.viewer.label"
+description_key = "settings.viewer.description"
+placeholder_key = "settings.viewer.placeholder"
+default         = "xdg-open"
+visible_when    = { key = "sync_settings", values = ["true"] }
+
+[[setting]]
+key             = "ocr_lang"
+type            = "string"
+label_key       = "settings.ocr_lang.label"
+description_key = "settings.ocr_lang.description"
+placeholder_key = "settings.ocr_lang.placeholder"
+default         = "eng"
+visible_when    = { key = "sync_settings", values = ["true"] }
+
+[[setting]]
+key             = "editor_cmd"
+type            = "string"
+label_key       = "settings.editor_cmd.label"
+description_key = "settings.editor_cmd.description"
+default         = "satty -f {file} -o {file} --copy-command wl-copy --early-exit --actions-on-enter save-to-file --init-tool brush"
+advanced        = true
+visible_when    = { key = "sync_settings", values = ["true"] }
+
+[[setting]]
+key             = "slurp_args"
+type            = "string"
+label_key       = "settings.slurp_args.label"
+description_key = "settings.slurp_args.description"
+default         = "-d -w 2"
+advanced        = true
+visible_when    = { key = "sync_settings", values = ["true"] }
+
+[[setting]]
+key             = "recorder"
+type            = "select"
+label_key       = "settings.recorder.label"
+description_key = "settings.recorder.description"
+default         = "gpu"
+visible_when    = { key = "sync_settings", values = ["true"] }
+options = [
+  { value = "gpu", label_key = "settings.recorder.options.gpu" },
+  { value = "wf", label_key = "settings.recorder.options.wf" },
+]
+
+[[setting]]
+key             = "quality"
+type            = "select"
+label_key       = "settings.quality.label"
+description_key = "settings.quality.description"
+default         = "very_high"
+visible_when    = { key = "sync_settings", values = ["true"] }
+options = [
+  { value = "medium", label_key = "settings.quality.options.medium" },
+  { value = "high", label_key = "settings.quality.options.high" },
+  { value = "very_high", label_key = "settings.quality.options.very_high" },
+  { value = "ultra", label_key = "settings.quality.options.ultra" },
+]
+
+[[setting]]
+key             = "fps"
+type            = "int"
+label_key       = "settings.fps.label"
+description_key = "settings.fps.description"
+default         = 60
+min             = 10
+max             = 240
+step            = 10
+visible_when    = { key = "sync_settings", values = ["true"] }
+
+[[setting]]
+key             = "replay_seconds"
+type            = "int"
+label_key       = "settings.replay_seconds.label"
+description_key = "settings.replay_seconds.description"
+default         = 120
+min             = 15
+max             = 900
+step            = 15
+visible_when    = { key = "sync_settings", values = ["true"] }
+
+[[setting]]
+key             = "audio_desktop"
+type            = "string"
+label_key       = "settings.audio_desktop.label"
+description_key = "settings.audio_desktop.description"
+default         = "default_output"
+advanced        = true
+visible_when    = { key = "sync_settings", values = ["true"] }
+
+[[setting]]
+key             = "audio_mic"
+type            = "string"
+label_key       = "settings.audio_mic.label"
+description_key = "settings.audio_mic.description"
+default         = "default_input"
+advanced        = true
+visible_when    = { key = "sync_settings", values = ["true"] }
+
+[[setting]]
+key             = "copy"
+type            = "bool"
+label_key       = "settings.copy.label"
+description_key = "settings.copy.description"
+default         = true
+visible_when    = { key = "sync_settings", values = ["true"] }
+
+[[setting]]
+key             = "save"
+type            = "bool"
+label_key       = "settings.save.label"
+description_key = "settings.save.description"
+default         = true
+visible_when    = { key = "sync_settings", values = ["true"] }
+
+[[setting]]
+key             = "freeze"
+type            = "bool"
+label_key       = "settings.freeze.label"
+description_key = "settings.freeze.description"
+default         = true
+visible_when    = { key = "sync_settings", values = ["true"] }
+
+[[setting]]
+key             = "cursor"
+type            = "bool"
+label_key       = "settings.cursor.label"
+description_key = "settings.cursor.description"
+default         = false
+visible_when    = { key = "sync_settings", values = ["true"] }
+
+[[setting]]
+key             = "notify_actions"
+type            = "bool"
+label_key       = "settings.notify_actions.label"
+description_key = "settings.notify_actions.description"
+default         = true
+advanced        = true
+visible_when    = { key = "sync_settings", values = ["true"] }
+
+[[setting]]
+key             = "notify_timeout"
+type            = "int"
+label_key       = "settings.notify_timeout.label"
+description_key = "settings.notify_timeout.description"
+default         = 7000
+min             = 1000
+max             = 30000
+step            = 500
+advanced        = true
+visible_when    = { key = "sync_settings", values = ["true"] }
+
+# ---------------------------------------------------------------------------
+# entries
+# ---------------------------------------------------------------------------
+
+[[service]]
+id    = "state"
+entry = "service.luau"
+
+[[widget]]
+id    = "recording"
+entry = "widget.luau"
+
+[widget.actions]
+middle = "none"
+
+[[launcher_provider]]
+id     = "capture"
+entry  = "launcher.luau"
+prefix = "ss"
+glyph  = "camera"
+
+[[panel]]
+id        = "menu"
+entry     = "panel.luau"
+width     = 380
+height    = 460
+placement = "attached"
+position  = "auto"
