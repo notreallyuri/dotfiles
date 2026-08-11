@@ -12,17 +12,11 @@ wzt.on("window-config-reloaded", function(window, pane)
   end
 end)
 
--- Hints shown alongside the mode name while a key_table from keybinds.lua is active
 local key_table_hints = {
   pane_manage = "v split-right   h split-down   q close   z zoom   r resize",
   resize_pane = "hjkl/arrows resize   esc/enter done",
 }
 
--- Ghostty-style feedback: a status pill while LEADER is held or a key_table is active
--- Note: never call window:set_config_overrides() from here to react to leader
--- state - applying overrides forces a config reload, and wezterm's reload path
--- unconditionally clears leader_is_down and the key_table stack, which kills
--- the very leader sequence this is supposed to give feedback about.
 wzt.on("update-status", function(window, pane)
   local table_name = window:active_key_table()
   local active = table_name ~= nil or window:leader_is_active()
@@ -47,7 +41,6 @@ wzt.on("update-status", function(window, pane)
   }))
 end)
 
--- Distinct tab color per SSH domain so you always know which box you're on
 local domain_colors = {
   notreallyserver = "#f7768e",
 }
@@ -95,7 +88,7 @@ wzt.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
   local remainder = cols % #tabs
 
   local target_width = base_width
-  if tab.tab_index == #tabs - 1 then -- tab_index is 0-based
+  if tab.tab_index == #tabs - 1 then
     target_width = base_width + remainder
   end
 
@@ -107,8 +100,6 @@ wzt.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
   local pad_left = string.rep(" ", pad_left_len)
   local rest = (tab.tab_index + 1) .. " " .. core .. string.rep(" ", pad_right_len)
 
-  -- Pull active/inactive styling straight from the color scheme so tabs stay
-  -- in sync if the scheme ever changes, falling back to Noctalia's own values.
   local tab_bar = config.resolved_palette and config.resolved_palette.tab_bar
   local style = tab_bar and (tab.is_active and tab_bar.active_tab or tab_bar.inactive_tab)
   local bg = (style and style.bg_color) or (tab.is_active and "#58a6ff" or "#010409")
@@ -147,8 +138,7 @@ function M.apply_to_config(config)
   config.harfbuzz_features = { "liga=1", "clig=1", "calt=1" }
 
   config.use_fancy_tab_bar = false
-  -- Kept visible even with one tab: it's what shows the LEADER/key_table status pill.
-  config.hide_tab_bar_if_only_one_tab = false
+  config.hide_tab_bar_if_only_one_tab = true
   config.tab_max_width = 999
   config.show_new_tab_button_in_tab_bar = false
 
