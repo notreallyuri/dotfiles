@@ -9,7 +9,6 @@ local resurrect = wzt.plugin.require("https://github.com/MLFlexer/resurrect.wezt
 keybinds.apply_to_config(config)
 ui.apply_to_config(config)
 
-
 -- SSH profiles: hostnames/users resolve via ~/.ssh/config
 config.ssh_domains = {
   {

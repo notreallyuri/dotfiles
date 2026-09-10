@@ -11,6 +11,6 @@ return {
       ["html"] = { enable_close = true },
       ["typescriptreact"] = { enable_close = true },
       ["javascriptreact"] = { enable_close = true },
-    }
+    },
   },
 }

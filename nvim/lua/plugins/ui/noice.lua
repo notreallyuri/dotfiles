@@ -23,8 +23,7 @@ return {
       },
     },
     views = {
-      cmdline_popup = {
-      },
+      cmdline_popup = {},
       popupmenu = {
         relative = "editor",
         border = { style = "rounded" },

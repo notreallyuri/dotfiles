@@ -35,8 +35,13 @@ end
 local function as_json()
   local parts = {}
   for _, opt in ipairs(config.describe()) do
-    parts[#parts + 1] = string.format('%s: {"value": %s, "type": %s, "origin": %s}',
-      json.string(opt.key), serialize(opt.value), json.string(opt.type), json.string(opt.origin))
+    parts[#parts + 1] = string.format(
+      '%s: {"value": %s, "type": %s, "origin": %s}',
+      json.string(opt.key),
+      serialize(opt.value),
+      json.string(opt.type),
+      json.string(opt.origin)
+    )
   end
   return "{" .. table.concat(parts, ", ") .. "}"
 end
@@ -49,8 +54,7 @@ local function as_text()
     width = math.max(width, #opt.key)
   end
   for _, opt in ipairs(options) do
-    lines[#lines + 1] = string.format("%-" .. width .. "s  %s  (%s)\n",
-      opt.key, serialize(opt.value), opt.origin)
+    lines[#lines + 1] = string.format("%-" .. width .. "s  %s  (%s)\n", opt.key, serialize(opt.value), opt.origin)
   end
   return table.concat(lines)
 end
@@ -61,7 +65,8 @@ function M.show()
     return
   end
   io.write(as_text())
-  io.write(string.format([[
+  io.write(string.format(
+    [[
 
 Layers, later wins:
   %s
@@ -69,7 +74,11 @@ Layers, later wins:
   %s/*.lua        (written by front-ends)
   $NOSHOT_<OPTION>
   --option=value, --set option=value
-]], config.paths.config, config.paths.drop_in, config.paths.generated))
+]],
+    config.paths.config,
+    config.paths.drop_in,
+    config.paths.generated
+  ))
 end
 
 return M

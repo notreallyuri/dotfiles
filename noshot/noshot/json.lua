@@ -16,9 +16,10 @@ local ESCAPES = {
 }
 
 function M.string(s)
-  local body = tostring(s):gsub('[%c"\\]', function(c)
-    return ESCAPES[c] or string.format("\\u%04X", string.byte(c))
-  end)
+  local body = tostring(s):gsub(
+    '[%c"\\]',
+    function(c) return ESCAPES[c] or string.format("\\u%04X", string.byte(c)) end
+  )
   return '"' .. body .. '"'
 end
 

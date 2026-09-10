@@ -96,9 +96,7 @@ return {
         type = "coreclr",
         request = "launch",
         name = "Launch dll",
-        program = function()
-          return vim.fn.input("Path to dll: ", vim.fn.getcwd() .. "/bin/Debug/", "file")
-        end,
+        program = function() return vim.fn.input("Path to dll: ", vim.fn.getcwd() .. "/bin/Debug/", "file") end,
         cwd = "${workspaceFolder}",
       },
       {

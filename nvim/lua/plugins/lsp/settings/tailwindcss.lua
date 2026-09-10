@@ -5,7 +5,7 @@ return {
         classRegex = {
           { [[class="([^"]*)"]] },
           { [[class=move\s*\|\|\s*\{?"?([^"}\)]*)"?\}?]] },
-          { [[cn!\(([^)]*)\)]],                          [["([^"]*)"]] },
+          { [[cn!\(([^)]*)\)]], [["([^"]*)"]] },
           { [[cn!\s*\(([^)]*)\)]] },
         },
       },
@@ -15,7 +15,12 @@ return {
     },
   },
   filetypes = {
-    "html", "css", "typescript", "typescriptreact",
-    "javascript", "javascriptreact", "rust"
+    "html",
+    "css",
+    "typescript",
+    "typescriptreact",
+    "javascript",
+    "javascriptreact",
+    "rust",
   },
 }

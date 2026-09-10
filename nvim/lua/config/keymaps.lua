@@ -63,9 +63,7 @@ vim.keymap.set("n", "<leader>ut", function()
           f_out:close()
         end
 
-        vim.defer_fn(function()
-          vim.cmd.colorscheme(item.text)
-        end, 50)
+        vim.defer_fn(function() vim.cmd.colorscheme(item.text) end, 50)
       end
     end,
   })

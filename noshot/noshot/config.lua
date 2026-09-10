@@ -34,31 +34,31 @@ local state_home = env_dir("XDG_STATE_HOME", home .. "/.local/state")
 --- with a message instead of being quietly ignored, so a typo in a conf file
 --- or a --flag is visible.
 local SCHEMA = {
-  image_dir      = "path",
-  video_dir      = "path",
-  name_format    = "string",
+  image_dir = "path",
+  video_dir = "path",
+  name_format = "string",
 
-  copy           = "bool",
-  save           = "bool",
-  freeze         = "bool",
-  cursor         = "bool",
-  record_cursor  = "bool",
+  copy = "bool",
+  save = "bool",
+  freeze = "bool",
+  cursor = "bool",
+  record_cursor = "bool",
 
-  editor_cmd     = "string",
-  browser        = "string",
-  viewer         = "string",
-  ocr_lang       = "string",
-  slurp_args     = "string",
+  editor_cmd = "string",
+  browser = "string",
+  viewer = "string",
+  ocr_lang = "string",
+  slurp_args = "string",
 
-  upload_hosts   = "table",
-  lens_url       = "string",
+  upload_hosts = "table",
+  lens_url = "string",
 
-  recorder       = "string",
-  fps            = "number",
-  quality        = "string",
+  recorder = "string",
+  fps = "number",
+  quality = "string",
   replay_seconds = "number",
-  audio_desktop  = "string",
-  audio_mic      = "string",
+  audio_desktop = "string",
+  audio_mic = "string",
 
   notify_actions = "bool",
   notify_timeout = "number",
@@ -77,7 +77,7 @@ local M = {
   record_cursor = true,
 
   editor_cmd = "satty -f {file} -o {file} --copy-command wl-copy"
-      .. " --early-exit --actions-on-enter save-to-file --init-tool brush",
+    .. " --early-exit --actions-on-enter save-to-file --init-tool brush",
   browser = "zen-browser",
   viewer = "xdg-open",
   ocr_lang = "eng",
@@ -85,14 +85,14 @@ local M = {
   slurp_args = "-d -w 2",
   upload_hosts = {
     {
-      url   = "https://litterbox.catbox.moe/resources/internals/api.php",
+      url = "https://litterbox.catbox.moe/resources/internals/api.php",
       field = "fileToUpload",
-      extra = "-F 'reqtype=fileupload' -F 'time=24h'"
+      extra = "-F 'reqtype=fileupload' -F 'time=24h'",
     },
     {
-      url   = "https://catbox.moe/user/api.php",
+      url = "https://catbox.moe/user/api.php",
       field = "fileToUpload",
-      extra = "-F 'reqtype=fileupload' --http1.1"
+      extra = "-F 'reqtype=fileupload' --http1.1",
     },
   },
   lens_url = "https://lens.google.com/uploadbyurl?url=",
@@ -114,9 +114,7 @@ for key in pairs(SCHEMA) do
   origins[key] = "default"
 end
 
-local function warn(where, message)
-  io.stderr:write(string.format("noshot: %s: %s\n", where, message))
-end
+local function warn(where, message) io.stderr:write(string.format("noshot: %s: %s\n", where, message)) end
 
 local TRUE = { ["true"] = true, ["1"] = true, yes = true, on = true }
 local FALSE = { ["false"] = true, ["0"] = true, no = true, off = true }
@@ -169,9 +167,7 @@ local function coerce(key, value)
 end
 
 --- /home/me/Pictures/x.png -> ~/Pictures/x.png
-function M.shorten(file)
-  return path.shorten(file, home)
-end
+function M.shorten(file) return path.shorten(file, home) end
 
 --- Merge a table of options into the config, reporting anything unusable.
 local function apply(tbl, origin)
@@ -253,9 +249,7 @@ function M.describe()
   for key, kind in pairs(SCHEMA) do
     out[#out + 1] = { key = key, type = kind, value = M[key], origin = origins[key] }
   end
-  table.sort(out, function(a, b)
-    return a.key < b.key
-  end)
+  table.sort(out, function(a, b) return a.key < b.key end)
   return out
 end
 

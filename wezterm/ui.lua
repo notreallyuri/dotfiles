@@ -2,9 +2,7 @@ local wzt = require("wezterm")
 
 local M = {}
 
-wzt.on("window-resized", function(window, pane)
-  wzt.GLOBAL.cols = window:active_tab():get_size().cols
-end)
+wzt.on("window-resized", function(window, pane) wzt.GLOBAL.cols = window:active_tab():get_size().cols end)
 
 wzt.on("window-config-reloaded", function(window, pane)
   if window:active_tab() then
@@ -141,8 +139,6 @@ function M.apply_to_config(config)
   config.tab_max_width = 999
   config.show_new_tab_button_in_tab_bar = false
 
-
-
   config.front_end = "WebGpu"
   config.max_fps = 144
   config.enable_wayland = true
@@ -154,7 +150,6 @@ function M.apply_to_config(config)
     top = 0,
     bottom = 0,
   }
-
 
   config.window_background_opacity = 0.9
 end

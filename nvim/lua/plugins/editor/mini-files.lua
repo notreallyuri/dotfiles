@@ -4,7 +4,11 @@ return {
   version = false,
   keys = {
     { "<leader>e", function() require("mini.files").open(vim.api.nvim_buf_get_name(0)) end, desc = "Open mini.files" },
-    { "<leader>E", function() require("mini.files").open(vim.uv.cwd()) end,                 desc = "Open mini.files (cwd)" },
+    {
+      "<leader>E",
+      function() require("mini.files").open(vim.uv.cwd()) end,
+      desc = "Open mini.files (cwd)",
+    },
   },
   opts = {
     windows = {
@@ -17,12 +21,8 @@ return {
     require("mini.files").setup(opts)
 
     local show_dotfiles = true
-    local filter_show = function(fs_entry)
-      return true
-    end
-    local filter_hide = function(fs_entry)
-      return not vim.startswith(fs_entry.name, ".")
-    end
+    local filter_show = function(fs_entry) return true end
+    local filter_hide = function(fs_entry) return not vim.startswith(fs_entry.name, ".") end
 
     local toggle_dotfiles = function()
       show_dotfiles = not show_dotfiles
@@ -88,9 +88,7 @@ return {
 
     vim.api.nvim_create_autocmd("User", {
       pattern = "MiniFilesActionRename",
-      callback = function(event)
-        Snacks.rename.on_rename_file(event.data.from, event.data.to)
-      end,
+      callback = function(event) Snacks.rename.on_rename_file(event.data.from, event.data.to) end,
     })
   end,
 }

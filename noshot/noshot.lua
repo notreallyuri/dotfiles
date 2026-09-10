@@ -6,9 +6,7 @@
 --- Where the modules live. Usually just the directory noshot.lua sits in, but
 --- when it is reached through a symlink on $PATH that directory is ~/.local/bin
 --- and holds nothing, so resolve the link before giving up.
-local function dir_of(path)
-  return path:match("^(.*)/[^/]+$") or "."
-end
+local function dir_of(path) return path:match("^(.*)/[^/]+$") or "." end
 
 local function readable(path)
   local f = io.open(path, "r")
@@ -96,45 +94,27 @@ OPTIONS
 ]]
 
 local commands = {
-  region = function()
-    capture.take("region")
-  end,
-  screen = function()
-    capture.take("screen")
-  end,
-  full = function()
-    capture.take("screen")
-  end,
-  fullscreen = function()
-    capture.take("screen")
-  end,
-  window = function()
-    capture.take("window")
-  end,
-  all = function()
-    capture.take("all")
-  end,
+  region = function() capture.take("region") end,
+  screen = function() capture.take("screen") end,
+  full = function() capture.take("screen") end,
+  fullscreen = function() capture.take("screen") end,
+  window = function() capture.take("window") end,
+  all = function() capture.take("all") end,
   last = capture.last,
 
-  record = function()
-    record.toggle(false)
-  end,
+  record = function() record.toggle(false) end,
   recordsound = function() -- legacy alias
     args.flags.audio = true
     record.toggle(false)
   end,
   ["record-stop"] = record.stop,
   ["record-pause"] = record.pause,
-  replay = function()
-    record.toggle(true)
-  end,
+  replay = function() record.toggle(true) end,
   ["replay-save"] = record.replay_save,
   status = record.status,
   config = dump.show,
 
-  help = function()
-    io.write(usage)
-  end,
+  help = function() io.write(usage) end,
 }
 
 local handler = commands[args.command]

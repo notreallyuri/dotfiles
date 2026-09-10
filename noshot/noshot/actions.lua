@@ -17,9 +17,7 @@ local M = {}
 --- there is no exit to wait for: a throwaway capture has to outlive it.
 local VIEWER_GRACE = 60
 
-function M.open(file)
-  shell.run("setsid -f " .. config.viewer .. " " .. q(file) .. " >/dev/null 2>&1")
-end
+function M.open(file) shell.run("setsid -f " .. config.viewer .. " " .. q(file) .. " >/dev/null 2>&1") end
 
 function M.edit(file)
   local editor = config.editor_cmd:match("^%S+")
@@ -27,9 +25,7 @@ function M.edit(file)
     notify.send("Screenshot", editor .. " is not installed", { urgency = "critical" })
     return false
   end
-  local cmd = (config.editor_cmd:gsub("{file}", function()
-    return q(file)
-  end))
+  local cmd = (config.editor_cmd:gsub("{file}", function() return q(file) end))
   return shell.run(cmd .. " >/dev/null 2>&1")
 end
 
@@ -86,9 +82,9 @@ function M.process(file, temp)
 
   if temp then
     if opened then
-      shell.run("setsid -f sh -c "
-        .. q(string.format("sleep %d; rm -f %s", VIEWER_GRACE, q(file)))
-        .. " >/dev/null 2>&1")
+      shell.run(
+        "setsid -f sh -c " .. q(string.format("sleep %d; rm -f %s", VIEWER_GRACE, q(file))) .. " >/dev/null 2>&1"
+      )
     else
       os.remove(file)
     end
@@ -109,9 +105,7 @@ function M.process(file, temp)
       {
         id = "open",
         label = "Open",
-        fn = function()
-          M.open(file)
-        end
+        fn = function() M.open(file) end,
       },
       {
         id = "edit",
@@ -119,14 +113,12 @@ function M.process(file, temp)
         fn = function()
           M.edit(file)
           clipboard.image(file)
-        end
+        end,
       },
       {
         id = "path",
         label = "Copy path",
-        fn = function()
-          clipboard.text(file)
-        end
+        fn = function() clipboard.text(file) end,
       },
       {
         id = "delete",
@@ -134,7 +126,7 @@ function M.process(file, temp)
         fn = function()
           os.remove(file)
           notify.send("Screenshot", "Deleted")
-        end
+        end,
       },
     },
   })

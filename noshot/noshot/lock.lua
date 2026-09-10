@@ -28,9 +28,7 @@ end
 
 --- `set -C` makes the redirect fail when the file is already there, so of two
 --- instances racing for the lock exactly one creates it.
-local function claim(pid)
-  return shell.run(string.format("(set -C; echo %s > %s) 2>/dev/null", pid, shell.q(LOCK)))
-end
+local function claim(pid) return shell.run(string.format("(set -C; echo %s > %s) 2>/dev/null", pid, shell.q(LOCK))) end
 
 --- The pid in the lock file, or nil when there is no lock to speak of.
 local function holder()

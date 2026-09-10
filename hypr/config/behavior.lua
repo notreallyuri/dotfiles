@@ -6,7 +6,7 @@ hl.config({
     follow_mouse = 2,
   },
   cursor = {
-    no_hardware_cursors = 1
+    no_hardware_cursors = 1,
   },
   misc = {
     disable_hyprland_logo = false,

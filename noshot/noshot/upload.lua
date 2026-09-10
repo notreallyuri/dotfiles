@@ -11,9 +11,7 @@ local q = shell.q
 local M = {}
 
 local function urlencode(s)
-  return (s:gsub("[^%w%-%._~]", function(c)
-    return string.format("%%%02X", string.byte(c))
-  end))
+  return (s:gsub("[^%w%-%._~]", function(c) return string.format("%%%02X", string.byte(c)) end))
 end
 
 --- Try each configured host in order until one returns a URL.
@@ -32,8 +30,7 @@ function M.image(file)
 
     local out, err = shell.sh_full(cmd)
     if args.flags.debug then
-      io.stderr:write(string.format("%s\n  cmd: %s\n  stdout: [%s]\n  stderr: [%s]\n",
-        host.url, cmd, out, err))
+      io.stderr:write(string.format("%s\n  cmd: %s\n  stdout: [%s]\n  stderr: [%s]\n", host.url, cmd, out, err))
     end
 
     local url = out:match("https?://[^%s\"'<>]+")

@@ -48,7 +48,11 @@ return {
         "org.assertj.core.api.Assertions.*",
       },
       filteredTypes = {
-        "com.sun.*", "io.micrometer.shaded.*", "java.awt.*", "jdk.*", "sun.*",
+        "com.sun.*",
+        "io.micrometer.shaded.*",
+        "java.awt.*",
+        "jdk.*",
+        "sun.*",
       },
     },
     sources = {

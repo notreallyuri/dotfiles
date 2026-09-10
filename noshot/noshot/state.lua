@@ -45,9 +45,7 @@ function M.write(t)
   f:close()
 end
 
-function M.clear()
-  os.remove(config.state_file)
-end
+function M.clear() os.remove(config.state_file) end
 
 function M.elapsed(start)
   local secs = os.time() - (tonumber(start) or os.time())

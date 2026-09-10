@@ -99,9 +99,7 @@ local function spawn_pid(cmd)
 end
 
 --- The recorder binary, as /proc will report it.
-local function comm_of(name)
-  return name == "gpu" and "gpu-screen-recorder" or "wf-recorder"
-end
+local function comm_of(name) return name == "gpu" and "gpu-screen-recorder" or "wf-recorder" end
 
 local function build_cmd(name, where, file, replay, audio)
   -- record_cursor is the recording's own default; --cursor / --no-cursor on
@@ -182,8 +180,7 @@ local function start(replay)
   else
     notify.send(
       "Recording started",
-      string.format("%s · %s%s", where.label, name == "gpu" and "GPU" or "CPU",
-        audio and " · audio" or "")
+      string.format("%s · %s%s", where.label, name == "gpu" and "GPU" or "CPU", audio and " · audio" or "")
     )
   end
 end
@@ -222,23 +219,17 @@ function M.stop()
         {
           id = "open",
           label = "Play",
-          fn = function()
-            actions.open(file)
-          end
+          fn = function() actions.open(file) end,
         },
         {
           id = "folder",
           label = "Folder",
-          fn = function()
-            actions.open(config.video_dir)
-          end
+          fn = function() actions.open(config.video_dir) end,
         },
         {
           id = "path",
           label = "Copy path",
-          fn = function()
-            clipboard.text(file)
-          end
+          fn = function() clipboard.text(file) end,
         },
         {
           id = "delete",
@@ -246,7 +237,7 @@ function M.stop()
           fn = function()
             os.remove(file)
             notify.send("Recording", "Deleted")
-          end
+          end,
         },
       },
     }
@@ -297,14 +288,16 @@ function M.status()
 
   local el = state.elapsed(st.start)
   local text = st.mode == "replay" and "REPLAY" or ((st.paused == "1" and "PAUSED " or "REC ") .. el)
-  print(string.format(
-    '{"recording":true,"mode":%s,"paused":%s,"elapsed":%s,"file":%s,"text":%s}',
-    json.string(st.mode),
-    st.paused == "1" and "true" or "false",
-    json.string(el),
-    json.string(st.file or ""),
-    json.string(text)
-  ))
+  print(
+    string.format(
+      '{"recording":true,"mode":%s,"paused":%s,"elapsed":%s,"file":%s,"text":%s}',
+      json.string(st.mode),
+      st.paused == "1" and "true" or "false",
+      json.string(el),
+      json.string(st.file or ""),
+      json.string(text)
+    )
+  )
 end
 
 return M

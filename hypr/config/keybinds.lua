@@ -12,9 +12,7 @@ hl.bind(kb.filemgr, hl.dsp.exec_cmd(apps.terminal .. " -e " .. apps.filemgr))
 hl.bind(kb.copy_color, hl.dsp.exec_cmd(apps.colorpicker .. " -a"))
 hl.bind(kb.lock, hl.dsp.exec_cmd(apps.lock))
 
-local shot = function(args)
-  return hl.dsp.exec_cmd(apps.noshot .. " " .. args)
-end
+local shot = function(args) return hl.dsp.exec_cmd(apps.noshot .. " " .. args) end
 
 hl.bind(kb.shot_region, shot("region"))
 hl.bind(kb.shot_screen, shot("screen"))

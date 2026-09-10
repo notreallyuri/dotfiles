@@ -15,11 +15,11 @@ return {
       { "<leader>d", group = "debug" },
       { "<leader>n", group = "npm" },
       { "<leader>t", group = "test" },
-      { "<leader>gh", group = "hunk" }
+      { "<leader>gh", group = "hunk" },
     },
     win = {
       border = "single",
-    }
+    },
   },
   keys = {
     { "<leader>?", function() require("which-key").show({ global = false }) end, desc = "Buffer keymaps" },

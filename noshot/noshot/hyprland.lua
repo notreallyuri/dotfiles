@@ -21,9 +21,8 @@ end
 
 function M.window_geom()
   notify.require_bins("hyprctl", "jq")
-  local geom = sh(
-    [[hyprctl -j activewindow | jq -r 'if .size then "\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])" else "" end']]
-  )
+  local geom =
+    sh([[hyprctl -j activewindow | jq -r 'if .size then "\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])" else "" end']])
   if geom == "" or geom:match("^0,0 0x0$") then
     return nil
   end
@@ -87,10 +86,12 @@ end
 function M.select_window()
   notify.require_bins("slurp", "jq", "hyprctl")
   local visible = [["$(hyprctl -j monitors | jq -c ']]
-      .. [[[.[].activeWorkspace.id, .[].specialWorkspace.id] | map(select(. != null and . != 0))')"]]
-  local boxes = "hyprctl -j clients | jq -r --argjson ws " .. visible .. " "
-      .. [['[.[] | select(.hidden == false and .size[0] > 0 and (.workspace.id | IN($ws[])))]]
-      .. [[ | "\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"] | unique[]']]
+    .. [[[.[].activeWorkspace.id, .[].specialWorkspace.id] | map(select(. != null and . != 0))')"]]
+  local boxes = "hyprctl -j clients | jq -r --argjson ws "
+    .. visible
+    .. " "
+    .. [['[.[] | select(.hidden == false and .size[0] > 0 and (.workspace.id | IN($ws[])))]]
+    .. [[ | "\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"] | unique[]']]
   return select_frozen(boxes .. " | slurp -r " .. config.slurp_args .. " 2>/dev/null")
 end
 

@@ -15,7 +15,7 @@ return {
         css = { "biome", "prettier", stop_after_first = true },
         markdown = { "markdownlint-cli2", "markdown-toc" },
         cs = { "csharpier" },
-        fsharp = { "fantomas" }
+        fsharp = { "fantomas" },
       },
       formatters = {
         biome_sort = {
@@ -28,7 +28,7 @@ return {
       format_on_save = {
         timeout_ms = 500,
         lsp_format = "fallback",
-      }
+      },
     }
   end,
 }

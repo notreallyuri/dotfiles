@@ -57,8 +57,6 @@ function M.flag(name, default)
   return v
 end
 
-function M.num(name, default)
-  return tonumber(M.flags[name]) or default
-end
+function M.num(name, default) return tonumber(M.flags[name]) or default end
 
 return M

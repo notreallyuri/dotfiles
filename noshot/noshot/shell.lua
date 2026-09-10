@@ -7,9 +7,7 @@ local path = require("noshot.path")
 local M = {}
 
 --- Single-quote a value so the shell treats it as one literal argument.
-function M.q(s)
-  return "'" .. (tostring(s):gsub("'", "'\\''")) .. "'"
-end
+function M.q(s) return "'" .. (tostring(s):gsub("'", "'\\''")) .. "'" end
 
 function M.run(cmd)
   local ok, _, code = os.execute(cmd)
@@ -73,13 +71,9 @@ function M.alive(pid, comm)
   return name == comm:sub(1, 15)
 end
 
-function M.sleep(seconds)
-  M.run("sleep " .. seconds)
-end
+function M.sleep(seconds) M.run("sleep " .. seconds) end
 
-function M.ensure_dir(dir)
-  M.run("mkdir -p " .. M.q(dir))
-end
+function M.ensure_dir(dir) M.run("mkdir -p " .. M.q(dir)) end
 
 local FALLBACK_FORMAT = "%Y-%m-%d_%H-%M-%S"
 
@@ -90,8 +84,13 @@ function M.unique_path(dir, ext)
   -- taking the capture down with it
   local ok, stamp = pcall(os.date, config.name_format)
   if not ok or type(stamp) ~= "string" or stamp == "" then
-    io.stderr:write(string.format("noshot: name_format %q is not a valid date format, using %q\n",
-      tostring(config.name_format), FALLBACK_FORMAT))
+    io.stderr:write(
+      string.format(
+        "noshot: name_format %q is not a valid date format, using %q\n",
+        tostring(config.name_format),
+        FALLBACK_FORMAT
+      )
+    )
     stamp = os.date(FALLBACK_FORMAT)
   end
 
