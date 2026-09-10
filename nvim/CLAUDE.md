@@ -40,12 +40,22 @@ Uses Neovim's **native** LSP config API (`vim.lsp.config(name, cfg)` + `vim.lsp.
 
 - `rust_analyzer` is explicitly disabled in `lsp.lua` (`vim.lsp.enable("rust_analyzer", false)`) because Rust is handled entirely by `rustaceanvim` (`lsp/rust.lua`), which manages its own rust-analyzer instance — don't re-enable it there without removing rustaceanvim's ownership first.
 - `copilot` is likewise disabled as an LSP client (`vim.lsp.enable("copilot", false)`) since `copilot.lua` (`plugins/ai/copilot.lua`) runs in suggestion mode, not as a completion-source LSP.
-- C#/omnisharp uses a custom `textDocument/definition` handler from `omnisharp-extended-lsp.nvim`.
-- Mason (`lsp/mason.lua`) installs LSP servers via `mason-lspconfig`'s `ensure_installed`, and separately installs non-LSP CLI tools (formatters like `prettier`, `markdownlint-cli2`, `csharpier`-adjacent tooling) via `mason-tool-installer`.
+- C# is handled by `roslyn.nvim` (`lsp/csharp.lua`), which ships its own `lsp/roslyn.lua` on the runtimepath and calls `vim.lsp.enable("roslyn")` itself — so `roslyn` must **not** be added to the enable list in `lsp.lua`. The spec's `init` only layers `vim.lsp.config("roslyn", { settings = ... })` on top; those settings use the server's flat `["csharp|<section>"]` key format, not a nested table.
+- Java is handled by `nvim-jdtls` (`lsp/java.lua`, a bare `lazy = true` spec) and started per-project from `ftplugin/java.lua`, not by `vim.lsp.enable`. jdtls needs a dedicated `-data` workspace dir plus the `java-test`/`java-debug-adapter` jars in `init_options.bundles`, which the native path can't express. Its settings table lives in `lsp/settings/jdtls.lua`.
+- Because of that, `mason-lspconfig`'s `automatic_enable` (which defaults to **on** and enables every installed server) must keep excluding `jdtls` in `lsp/mason.lua` — otherwise a second, unconfigured jdtls client spawns alongside the nvim-jdtls one.
+- Mason (`lsp/mason.lua`) installs LSP servers via `mason-lspconfig`'s `ensure_installed`, and separately installs non-LSP CLI tools via `mason-tool-installer`. Two guards there skip tools whose toolchain is missing: npm-backed ones (`prettier`, `markdownlint-cli2`, `markdown-toc`) and dotnet-backed ones (`roslyn-language-server`, `csharpier`, `netcoredbg`). `roslyn-language-server` has to go through `mason-tool-installer` because it isn't an `nvim-lspconfig` server name.
 
 ### Formatting (`lua/plugins/coding/conform.lua`)
 
-`conform.nvim` drives `formatters_by_ft`, mostly with `stop_after_first` fallback chains (e.g. TS/JS try `biome_sort` then `prettier`). `biome_sort` is a custom formatter entry (not a stock conform formatter) defined to run `biome check --write --unsafe` for import sorting before the primary formatter runs.
+`conform.nvim` drives `formatters_by_ft`, mostly with `stop_after_first` fallback chains (e.g. TS/JS try `biome_sort` then `prettier`). `biome_sort` is a custom formatter entry (not a stock conform formatter) defined to run `biome check --write --unsafe` for import sorting before the primary formatter runs. Java is deliberately absent from `formatters_by_ft` so `format_on_save`'s `lsp_format = "fallback"` routes it to jdtls' own formatter.
+
+### Debugging (`lua/plugins/coding/dap.lua`)
+
+All `nvim-dap` adapters and configurations live in that **single** spec. lazy.nvim keeps only the last `config` function when one plugin is declared by several specs, so splitting per-language dap config into a second `mfussenegger/nvim-dap` spec silently discards one of them. C# uses `coreclr`/`netcoredbg`; Java's adapter is registered by nvim-jdtls' `setup_dap` from `ftplugin/java.lua`; Rust's comes from rustaceanvim.
+
+### Testing (`lua/plugins/coding/neotest.lua`)
+
+Rust, vitest and .NET have neotest adapters. Java does **not** — it runs tests through jdtls' own java-test bridge, bound to the same `<leader>t*` keys buffer-locally in `ftplugin/java.lua`.
 
 ### Adding a new plugin
 
