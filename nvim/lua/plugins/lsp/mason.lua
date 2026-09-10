@@ -14,7 +14,7 @@ return {
     "WhoIsSethDaniel/mason-tool-installer.nvim",
   },
   config = function()
-    local ensure_installed = { "java-test", "java-debug-adapter" }
+    local ensure_installed = { "java-test", "java-debug-adapter", "stylua" }
 
     -- prettier/markdownlint-cli2/markdown-toc are npm-backed; skip them on
     -- machines without npm instead of failing on every startup
@@ -32,5 +32,5 @@ return {
     require("mason-tool-installer").setup({
       ensure_installed = ensure_installed,
     })
-  end
+  end,
 }

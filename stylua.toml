@@ -1,0 +1,7 @@
+# Matches the style this config was already written in: two spaces, and inline
+# `function() ... end` bodies left on one line, which is how most of the plugin
+# specs and keybind tables read.
+indent_type = "Spaces"
+indent_width = 2
+column_width = 120
+collapse_simple_statement = "FunctionOnly"

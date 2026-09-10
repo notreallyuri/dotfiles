@@ -1,0 +1,5 @@
+# Vendored: David Kolf's JSON module, kept as upstream ships it.
+nothings/dkjson.lua
+
+# Symlink into noshot/; formatting it would write through to the target.
+nothings/noctalia/noshot/bin/noshot.lua

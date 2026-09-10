@@ -50,12 +50,12 @@ adapters, skipping any whose toolchain is missing.
 | C# | roslyn (roslyn.nvim) | csharpier | netcoredbg | neotest |
 | C / C++ | clangd | clangd | - | - |
 | Lua | lua_ls | stylua | - | - |
-| Markdown | marksman | markdownlint-cli2 | - | - |
 
-Lua is the exception to Mason-managed tooling. conform calls `stylua`, but this
-config predates it and only 20 of its 49 Lua files match stylua's output, so it
-is left to `$PATH` rather than installed automatically. Installing it would
-quietly reformat the config on the next save.
+Every Lua file in the repo is stylua-formatted against the root `stylua.toml`:
+two spaces, and inline `function() ... end` bodies kept on one line, which is how
+the plugin specs and keybind tables were already written. `.styluaignore` keeps
+the vendored JSON module out of it.
+| Markdown | marksman | markdownlint-cli2 | - | - |
 
 Java is the one server not started by `vim.lsp.enable`. jdtls needs its own
 workspace directory and the test/debug jars wired in per project, so

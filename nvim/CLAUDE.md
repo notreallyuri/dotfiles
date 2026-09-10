@@ -15,7 +15,7 @@ There is no build/test suite — this is an editor config. Useful in-editor comm
 - `:Mason` — manage LSP servers/formatters installed via `mason-lspconfig`/`mason-tool-installer` (see `lua/plugins/lsp/mason.lua`).
 - `:TSUpdate` — (re)compile treesitter parsers; requires the `tree-sitter` CLI on `$PATH`.
 - `:checkhealth` — diagnose LSP/treesitter/plugin issues.
-- Format Lua with `stylua` (no repo-local `stylua.toml`; defaults apply) before committing changes to `.lua` files.
+- Format Lua with `stylua` before committing changes to `.lua` files. The repo root has a `stylua.toml` (two-space indent, `collapse_simple_statement = "FunctionOnly"`) that stylua finds by walking up, so run it without flags. Mason installs stylua; `.styluaignore` excludes the vendored `nothings/dkjson.lua`.
 - Launch with a scratch config to test changes in isolation: `nvim --clean -u init.lua` from this directory (or `nvim -u NONE` to bypass entirely).
 
 ## Architecture
