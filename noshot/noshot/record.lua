@@ -5,7 +5,9 @@ local args = require("noshot.args")
 local clipboard = require("noshot.clipboard")
 local config = require("noshot.config")
 local hyprland = require("noshot.hyprland")
+local json = require("noshot.json")
 local notify = require("noshot.notify")
+local path = require("noshot.path")
 local shell = require("noshot.shell")
 local state = require("noshot.state")
 
@@ -96,9 +98,19 @@ local function spawn_pid(cmd)
   return sh(line):match("%d+")
 end
 
-local function build_cmd(name, where, file, replay)
-  local audio = audio_sources(name) or ""
-  local cursor = args.flag("cursor", true) and "yes" or "no"
+--- The recorder binary, as /proc will report it.
+local function comm_of(name)
+  return name == "gpu" and "gpu-screen-recorder" or "wf-recorder"
+end
+
+local function build_cmd(name, where, file, replay, audio)
+  -- record_cursor is the recording's own default; --cursor / --no-cursor on
+  -- the command line is about this run, whichever of the two it lands in
+  local want = config.record_cursor
+  if args.flags.cursor ~= nil then
+    want = config.cursor
+  end
+  local cursor = want and "yes" or "no"
 
   if name == "gpu" then
     local window, extra = where.output or "screen", ""
@@ -116,8 +128,8 @@ local function build_cmd(name, where, file, replay)
       "gpu-screen-recorder -w %s %s -f %d -q %s -cursor %s %s %s %s",
       q(window),
       extra,
-      args.num("fps", config.fps),
-      q(args.flags.quality or config.quality),
+      config.fps,
+      q(config.quality),
       cursor,
       replay and ("-r " .. args.num("seconds", config.replay_seconds) .. " -replay-storage ram") or "",
       audio,
@@ -134,25 +146,28 @@ local function build_cmd(name, where, file, replay)
   elseif where.output and where.output ~= "screen" then
     scope = "-o " .. q(where.output)
   end
-  return string.format("wf-recorder %s %s -r %d -f %s", scope, audio, args.num("fps", config.fps), q(file))
+  return string.format("wf-recorder %s %s -r %d -f %s", scope, audio, config.fps, q(file))
 end
 
 local function start(replay)
   local name = backend()
   local where = target()
+  local audio = audio_sources(name)
+  local comm = comm_of(name)
   shell.ensure_dir(config.video_dir)
   local file = shell.unique_path(config.video_dir, ".mp4")
   os.remove(config.log_file)
 
-  local pid = spawn_pid(build_cmd(name, where, file, replay))
+  local pid = spawn_pid(build_cmd(name, where, file, replay, audio or ""))
   shell.sleep("0.6")
-  if not pid or not shell.run("kill -0 " .. pid .. " >/dev/null 2>&1") then
+  if not shell.alive(pid, comm) then
     local err = sh("tail -n 3 " .. q(config.log_file) .. " 2>/dev/null")
     notify.die("Recording failed", err ~= "" and err or "The recorder exited immediately")
   end
 
   state.write({
     pid = pid,
+    comm = comm,
     backend = name,
     mode = replay and "replay" or "record",
     file = replay and config.video_dir or file,
@@ -168,7 +183,7 @@ local function start(replay)
     notify.send(
       "Recording started",
       string.format("%s · %s%s", where.label, name == "gpu" and "GPU" or "CPU",
-        audio_sources(name) and " · audio" or "")
+        audio and " · audio" or "")
     )
   end
 end
@@ -182,7 +197,7 @@ function M.stop()
 
   shell.run("kill -s INT " .. st.pid .. " >/dev/null 2>&1")
   for _ = 1, 100 do -- give the muxer time to finalise the file
-    if not shell.run("kill -0 " .. st.pid .. " >/dev/null 2>&1") then
+    if not shell.alive(st.pid, st.comm) then
       break
     end
     shell.sleep("0.1")
@@ -194,14 +209,14 @@ function M.stop()
     return
   end
 
-  if not shell.exists(st.file) then
+  if not path.nonempty(st.file) then
     notify.die("Recording", "The recorder produced no file — see " .. config.log_file)
   end
 
   local file = st.file
   notify.send(
     "Recording saved",
-    string.format("%s · %s · %s", shell.shorten(file), state.elapsed(st.start), state.human_size(file)),
+    string.format("%s · %s · %s", config.shorten(file), state.elapsed(st.start), state.human_size(file)),
     {
       actions = {
         {
@@ -269,15 +284,11 @@ function M.replay_save()
     return
   end
   shell.run("kill -s USR1 " .. st.pid .. " >/dev/null 2>&1")
-  notify.send("Replay saved", "Clip written to " .. shell.shorten(config.video_dir))
+  notify.send("Replay saved", "Clip written to " .. config.shorten(config.video_dir))
 end
 
 --- Machine readable status, for a bar widget: noshot status
 function M.status()
-  local function json(s)
-    return '"' .. tostring(s):gsub('[\\"]', "\\%0") .. '"'
-  end
-
   local st = state.read()
   if not st then
     print('{"recording":false,"mode":"idle","paused":false,"elapsed":"","file":"","text":""}')
@@ -288,11 +299,11 @@ function M.status()
   local text = st.mode == "replay" and "REPLAY" or ((st.paused == "1" and "PAUSED " or "REC ") .. el)
   print(string.format(
     '{"recording":true,"mode":%s,"paused":%s,"elapsed":%s,"file":%s,"text":%s}',
-    json(st.mode),
+    json.string(st.mode),
     st.paused == "1" and "true" or "false",
-    json(el),
-    json(st.file or ""),
-    json(text)
+    json.string(el),
+    json.string(st.file or ""),
+    json.string(text)
   ))
 end
 

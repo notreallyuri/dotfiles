@@ -1,1 +1,1 @@
-../../../scripts/noshot.lua
+../../../../noshot/noshot.lua

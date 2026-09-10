@@ -1,12 +1,18 @@
 --- Asking Hyprland where things are, and letting the user point at them.
 
 local config = require("noshot.config")
+local lock = require("noshot.lock")
 local notify = require("noshot.notify")
 local shell = require("noshot.shell")
 
 local q, sh = shell.q, shell.sh
 
 local M = {}
+
+--- If noshot is killed between freeze() and unfreeze() — a Ctrl-C, a crash —
+--- nothing is left to take the overlay down, and the desktop looks stuck.
+--- The watchdog bounds that to something a user can wait out.
+local FREEZE_WATCHDOG = 120
 
 function M.focused_output()
   notify.require_bins("hyprctl", "jq")
@@ -30,7 +36,11 @@ local function freeze()
   if not config.freeze or not shell.have("hyprpicker") or frozen_pid then
     return
   end
-  frozen_pid = sh("hyprpicker -r -z >/dev/null 2>&1 & echo $!"):match("%d+")
+  local cmd = "hyprpicker -r -z"
+  if shell.have("timeout") then
+    cmd = "timeout " .. FREEZE_WATCHDOG .. " " .. cmd
+  end
+  frozen_pid = sh(cmd .. " >/dev/null 2>&1 & echo $!"):match("%d+")
   -- wait for the frozen overlay to actually map, instead of guessing a delay
   for _ = 1, 60 do
     if sh("hyprctl -j layers | jq -r '..|.namespace? // empty'"):find("hyprpicker", 1, true) then
@@ -48,12 +58,15 @@ local function unfreeze()
   end
 end
 
---- Run an interactive selection with the screen frozen underneath.
+--- Run an interactive selection with the screen frozen underneath. Only one
+--- noshot may be doing this at a time — see noshot/lock.lua.
 local function select_frozen(cmd)
+  lock.hold()
   freeze()
   local geom = sh(cmd)
   unfreeze()
   if geom == "" then
+    lock.release()
     os.exit(0) -- selection cancelled
   end
   return geom

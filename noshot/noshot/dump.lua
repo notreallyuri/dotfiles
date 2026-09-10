@@ -2,6 +2,7 @@
 
 local args = require("noshot.args")
 local config = require("noshot.config")
+local json = require("noshot.json")
 
 local M = {}
 
@@ -21,12 +22,12 @@ local function serialize(value)
     end
     table.sort(keys)
     for _, k in ipairs(keys) do
-      parts[#parts + 1] = string.format("%q: %s", k, serialize(value[k]))
+      parts[#parts + 1] = string.format("%s: %s", json.string(k), serialize(value[k]))
     end
     return "{" .. table.concat(parts, ", ") .. "}"
   end
   if kind == "string" then
-    return string.format("%q", value)
+    return json.string(value)
   end
   return tostring(value)
 end
@@ -34,19 +35,20 @@ end
 local function as_json()
   local parts = {}
   for _, opt in ipairs(config.describe()) do
-    parts[#parts + 1] = string.format('%q: {"value": %s, "type": %q, "origin": %q}',
-      opt.key, serialize(opt.value), opt.type, opt.origin)
+    parts[#parts + 1] = string.format('%s: {"value": %s, "type": %s, "origin": %s}',
+      json.string(opt.key), serialize(opt.value), json.string(opt.type), json.string(opt.origin))
   end
   return "{" .. table.concat(parts, ", ") .. "}"
 end
 
 local function as_text()
+  local options = config.describe()
   local lines = {}
   local width = 0
-  for _, opt in ipairs(config.describe()) do
+  for _, opt in ipairs(options) do
     width = math.max(width, #opt.key)
   end
-  for _, opt in ipairs(config.describe()) do
+  for _, opt in ipairs(options) do
     lines[#lines + 1] = string.format("%-" .. width .. "s  %s  (%s)\n",
       opt.key, serialize(opt.value), opt.origin)
   end

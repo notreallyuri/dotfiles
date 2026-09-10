@@ -3,13 +3,19 @@
 local args = require("noshot.args")
 local clipboard = require("noshot.clipboard")
 local config = require("noshot.config")
+local lock = require("noshot.lock")
 local notify = require("noshot.notify")
+local path = require("noshot.path")
 local shell = require("noshot.shell")
 local upload = require("noshot.upload")
 
 local q = shell.q
 
 local M = {}
+
+--- xdg-open hands the file to the real viewer and returns straight away, so
+--- there is no exit to wait for: a throwaway capture has to outlive it.
+local VIEWER_GRACE = 60
 
 function M.open(file)
   shell.run("setsid -f " .. config.viewer .. " " .. q(file) .. " >/dev/null 2>&1")
@@ -48,12 +54,13 @@ function M.ocr(file)
 end
 
 --- Apply the requested actions to a finished capture and report the result.
-function M.process(file)
-  local keep = args.flag("save", config.save)
-
+--- `temp` marks a capture that only exists to be copied — it is deleted at the
+--- end. `last` deliberately passes false: that file is one the user kept.
+function M.process(file, temp)
   if args.flag("edit", false) then
     M.edit(file)
-    if not shell.exists(file) then
+    if not path.nonempty(file) then
+      lock.release()
       os.exit(0) -- editor discarded the capture
     end
   end
@@ -68,17 +75,26 @@ function M.process(file)
     did_something = true
   end
 
-  if args.flag("copy", config.copy) and not args.flag("ocr", false) then
+  if config.copy and not args.flag("ocr", false) then
     clipboard.image(file)
   end
-  if args.flag("open", false) then
+
+  local opened = args.flag("open", false)
+  if opened then
     M.open(file)
   end
 
-  if not keep then
-    os.remove(file)
+  if temp then
+    if opened then
+      shell.run("setsid -f sh -c "
+        .. q(string.format("sleep %d; rm -f %s", VIEWER_GRACE, q(file)))
+        .. " >/dev/null 2>&1")
+    else
+      os.remove(file)
+    end
     if not did_something then
-      notify.send("Screenshot", "Copied to the clipboard")
+      -- --no-copy --no-save leaves nothing behind; don't claim otherwise
+      notify.send("Screenshot", config.copy and "Copied to the clipboard" or "Discarded")
     end
     return
   end
@@ -87,7 +103,7 @@ function M.process(file)
     return -- the action already notified, don't stack a second popup
   end
 
-  notify.send("Screenshot saved", shell.shorten(file), {
+  notify.send("Screenshot saved", config.shorten(file), {
     icon = file,
     actions = {
       {

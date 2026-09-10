@@ -1,11 +1,18 @@
 --- Desktop notifications, plus the two ways this script gives up.
 
 local config = require("noshot.config")
+local lock = require("noshot.lock")
+local path = require("noshot.path")
 local shell = require("noshot.shell")
 
 local q = shell.q
 
 local M = {}
+
+--- How long to wait on a notification the user is meant to answer. Some
+--- daemons never expire a popup that has actions, so `timeout` is the way out;
+--- with notify_timeout = 0 (never expire) that has no deadline to follow.
+local FOREVER = 120
 
 --- opts: icon, urgency, timeout, actions = { { id, label, fn }, ... }
 --- When actions are used the notification is synchronous: the chosen action's
@@ -15,7 +22,7 @@ function M.send(title, body, opts)
   local timeout = opts.timeout or config.notify_timeout
   local cmd = { "notify-send", "-a", q("Screenshot"), "-t", tostring(timeout) }
 
-  if opts.icon and shell.exists(opts.icon) then
+  if opts.icon and path.nonempty(opts.icon) then
     cmd[#cmd + 1] = "-i " .. q(opts.icon)
     cmd[#cmd + 1] = "-h " .. q("string:image-path:file://" .. opts.icon)
   elseif opts.icon then
@@ -30,13 +37,11 @@ function M.send(title, body, opts)
     for _, a in ipairs(actions) do
       cmd[#cmd + 1] = "-A " .. q(a.id .. "=" .. a.label)
     end
-    local line = string.format(
-      "timeout %d %s %s %s 2>/dev/null",
-      math.floor(timeout / 1000) + 5,
-      table.concat(cmd, " "),
-      q(title),
-      q(body or "")
-    )
+    local line = table.concat(cmd, " ") .. " " .. q(title) .. " " .. q(body or "") .. " 2>/dev/null"
+    if shell.have("timeout") then
+      local grace = timeout > 0 and (math.floor(timeout / 1000) + 5) or FOREVER
+      line = string.format("timeout %d %s", grace, line)
+    end
     local chosen = shell.sh(line)
     for _, a in ipairs(actions) do
       if chosen == a.id and a.fn then
@@ -51,6 +56,7 @@ end
 function M.die(title, body)
   M.send(title, body, { urgency = "critical" })
   io.stderr:write(title .. ": " .. (body or "") .. "\n")
+  lock.release()
   os.exit(1)
 end
 

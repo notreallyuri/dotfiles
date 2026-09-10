@@ -2,6 +2,7 @@
 --- handful of file helpers everything else needs.
 
 local config = require("noshot.config")
+local path = require("noshot.path")
 
 local M = {}
 
@@ -52,14 +53,24 @@ function M.have(bin)
   return have_cache[bin]
 end
 
-function M.exists(path)
-  local f = io.open(path, "r")
+--- Is that pid still running — and still the program we started? Reading
+--- /proc beats `kill -0`: no fork, and a recycled pid is not mistaken for the
+--- recorder we left behind. /proc truncates the name to 15 characters.
+function M.alive(pid, comm)
+  pid = tostring(pid or ""):match("^%d+$")
+  if not pid then
+    return false
+  end
+  local f = io.open("/proc/" .. pid .. "/comm", "r")
   if not f then
     return false
   end
-  local size = f:seek("end")
+  local name = f:read("l") or ""
   f:close()
-  return size and size > 0
+  if not comm or comm == "" then
+    return true
+  end
+  return name == comm:sub(1, 15)
 end
 
 function M.sleep(seconds)
@@ -85,22 +96,14 @@ function M.unique_path(dir, ext)
   end
 
   local base = string.format("%s/%s", dir, stamp)
-  local path = base .. ext
+  local candidate = base .. ext
   local n = 1
-  while M.exists(path) do
-    path = string.format("%s-%d%s", base, n, ext)
+  -- exists, not nonempty: an empty leftover is still a name taken
+  while path.exists(candidate) do
+    candidate = string.format("%s-%d%s", base, n, ext)
     n = n + 1
   end
-  return path
-end
-
---- /home/me/Pictures/x.png -> ~/Pictures/x.png (plain match, not a pattern)
-function M.shorten(path)
-  local home = config.home
-  if path:sub(1, #home) == home then
-    return "~" .. path:sub(#home + 1)
-  end
-  return path
+  return candidate
 end
 
 return M

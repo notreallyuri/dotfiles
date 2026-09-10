@@ -61,8 +61,10 @@ function M.search(file)
     return false
   end
 
-  local browser = config.browser:match("^%S+")
-  if not shell.have(browser) then
+  -- browser may carry arguments ("flatpak run org.mozilla.firefox"); only the
+  -- first word is a program to look for, but the whole line is what runs
+  local browser = config.browser
+  if not shell.have(browser:match("^%S+") or "") then
     browser = "xdg-open"
   end
   shell.run("setsid -f " .. browser .. " " .. q(config.lens_url .. urlencode(url)) .. " >/dev/null 2>&1")

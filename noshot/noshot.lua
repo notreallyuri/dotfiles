@@ -3,10 +3,38 @@
 --- Run `noshot help` for the full command list.
 --- The moving parts live in ./noshot/; this file is only the CLI.
 
-local here = (arg[0] or ""):match("^(.*)/[^/]+$") or "."
+--- Where the modules live. Usually just the directory noshot.lua sits in, but
+--- when it is reached through a symlink on $PATH that directory is ~/.local/bin
+--- and holds nothing, so resolve the link before giving up.
+local function dir_of(path)
+  return path:match("^(.*)/[^/]+$") or "."
+end
+
+local function readable(path)
+  local f = io.open(path, "r")
+  if not f then
+    return false
+  end
+  f:close()
+  return true
+end
+
+local self = arg[0] or ""
+local here = dir_of(self)
+
+if not readable(here .. "/noshot/args.lua") then
+  local pipe = io.popen("readlink -f '" .. self:gsub("'", "'\\''") .. "' 2>/dev/null")
+  if pipe then
+    local real = pipe:read("*l")
+    pipe:close()
+    if real and real ~= "" then
+      here = dir_of(real)
+    end
+  end
+end
+
 package.path = table.concat({
   here .. "/?.lua",
-  (os.getenv("HOME") or "") .. "/.config/nothings/scripts/?.lua",
   package.path,
 }, ";")
 
@@ -14,6 +42,7 @@ local args = require("noshot.args").parse(arg)
 local capture = require("noshot.capture")
 local config = require("noshot.config")
 local dump = require("noshot.dump")
+local lock = require("noshot.lock")
 local notify = require("noshot.notify")
 local record = require("noshot.record")
 
@@ -56,6 +85,7 @@ RECORDING FLAGS
   --mic               capture the microphone (combine with --audio)
   --region --window   record a selection or a window instead of a monitor
   --output=DP-1       record a specific monitor
+  --no-cursor         leave the pointer out (recordings keep it by default)
   --fps=N  --seconds=N  --backend=gpu|wf  --quality=very_high
 
 OPTIONS
@@ -114,7 +144,12 @@ if not handler then
   os.exit(1)
 end
 
-if args.command ~= "config" and args.command ~= "help" then
+-- `status` is polled by bar widgets; keep it free of the dependency check,
+-- which is a fork of its own every tick
+local QUIET = { config = true, help = true, status = true }
+if not QUIET[args.command] then
   notify.require_bins("notify-send")
 end
+
 handler()
+lock.release()

@@ -11,6 +11,8 @@
 --- Layer 4 is where a shell plugin (Noctalia) parks the settings it manages,
 --- so the same values apply to a keybind that never goes through the shell.
 
+local path = require("noshot.path")
+
 local home = os.getenv("HOME")
 if not home then
   os.execute('notify-send "Screenshot" "$HOME is not set!"')
@@ -40,6 +42,7 @@ local SCHEMA = {
   save           = "bool",
   freeze         = "bool",
   cursor         = "bool",
+  record_cursor  = "bool",
 
   editor_cmd     = "string",
   browser        = "string",
@@ -69,7 +72,9 @@ local M = {
   copy = true,
   save = true,
   freeze = true,
+  -- the pointer is noise in a screenshot and the point of a screencast
   cursor = false,
+  record_cursor = true,
 
   editor_cmd = "satty -f {file} -o {file} --copy-command wl-copy"
       .. " --early-exit --actions-on-enter save-to-file --init-tool brush",
@@ -109,25 +114,8 @@ for key in pairs(SCHEMA) do
   origins[key] = "default"
 end
 
-local function shorten(path)
-  if path:sub(1, #home) == home then
-    return "~" .. path:sub(#home + 1)
-  end
-  return path
-end
-
 local function warn(where, message)
   io.stderr:write(string.format("noshot: %s: %s\n", where, message))
-end
-
-local function expand(path)
-  if path:sub(1, 2) == "~/" then
-    return home .. path:sub(2)
-  end
-  if path == "~" then
-    return home
-  end
-  return (path:gsub("^%$HOME", home))
 end
 
 local TRUE = { ["true"] = true, ["1"] = true, yes = true, on = true }
@@ -175,9 +163,14 @@ local function coerce(key, value)
   end
   value = tostring(value)
   if want == "path" then
-    value = expand(value)
+    value = path.expand(value, home)
   end
   return value
+end
+
+--- /home/me/Pictures/x.png -> ~/Pictures/x.png
+function M.shorten(file)
+  return path.shorten(file, home)
 end
 
 --- Merge a table of options into the config, reporting anything unusable.
@@ -193,26 +186,17 @@ local function apply(tbl, origin)
   end
 end
 
-local function exists(path)
-  local f = io.open(path, "r")
-  if not f then
-    return false
-  end
-  f:close()
-  return true
-end
-
-local function load_file(path)
-  if not exists(path) then
+local function load_file(file)
+  if not path.exists(file) then
     return
   end
-  local ok, user = pcall(dofile, path)
+  local ok, user = pcall(dofile, file)
   if not ok then
-    warn(shorten(path), tostring(user))
+    warn(M.shorten(file), tostring(user))
   elseif type(user) ~= "table" then
-    warn(shorten(path), "expected the file to return a table")
+    warn(M.shorten(file), "expected the file to return a table")
   else
-    apply(user, shorten(path))
+    apply(user, M.shorten(file))
   end
 end
 
@@ -228,7 +212,6 @@ local function load_dir(dir)
 end
 
 load_file(config_home .. "/nothings/noshot.conf.lua")
-load_file(config_home .. "/nothings/scripts/noshot.conf.lua") -- legacy location
 load_dir(config_home .. "/nothings/noshot.conf.d")
 load_dir(state_home .. "/noshot")
 

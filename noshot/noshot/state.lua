@@ -5,10 +5,13 @@ local shell = require("noshot.shell")
 
 local M = {}
 
-local KEYS = { "pid", "backend", "mode", "file", "start", "paused" }
+local KEYS = { "pid", "comm", "backend", "mode", "file", "start", "paused" }
 
 --- Returns the state table, or nil when nothing is recording (a stale file
---- from a crashed recorder counts as nothing and is cleaned up).
+--- from a crashed recorder counts as nothing and is cleaned up). `comm` is
+--- checked too, so a pid the kernel has since handed to something else does
+--- not read as a recording still in flight — signalling it would hit an
+--- innocent process.
 function M.read()
   local f = io.open(config.state_file, "r")
   if not f then
@@ -22,7 +25,7 @@ function M.read()
     end
   end
   f:close()
-  if not t.pid or not shell.run("kill -0 " .. t.pid .. " >/dev/null 2>&1") then
+  if not shell.alive(t.pid, t.comm) then
     os.remove(config.state_file)
     return nil
   end
