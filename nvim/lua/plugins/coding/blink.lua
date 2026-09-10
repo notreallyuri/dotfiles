@@ -1,7 +1,7 @@
 return {
   "saghen/blink.cmp",
   version = "*",
-  dependencies = { "rafamadriz/friendly-snippets", "giuxtaposition/blink-cmp-copilot" },
+  dependencies = { "rafamadriz/friendly-snippets" },
   opts = {
     keymap = {
       preset = "default",
@@ -16,15 +16,7 @@ return {
       nerd_font_variant = "mono",
     },
     sources = {
-      default = { "lsp", "path", "snippets", "buffer", "copilot" },
-      providers = {
-        copilot = {
-          name = "copilot",
-          module = "blink-cmp-copilot",
-          score_offset = 100,
-          async = true,
-        },
-      },
+      default = { "lsp", "path", "snippets", "buffer" },
     },
     completion = {
       documentation = {
