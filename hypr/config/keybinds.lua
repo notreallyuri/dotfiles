@@ -68,13 +68,12 @@ hl.bind(kb.wallpaper, hl.dsp.exec_cmd(apps.ipc .. "panel-toggle wallpaper"))
 
 hl.bind(kb.comm, hl.dsp.workspace.toggle_special("comm"))
 hl.bind(kb.music, hl.dsp.workspace.toggle_special("music"))
-hl.bind(kb.browser, hl.dsp.workspace.toggle_special("browser"))
-hl.bind(kb.games, hl.dsp.workspace.toggle_special("gaming"))
+hl.bind(kb.scratch, hl.dsp.workspace.toggle_special("term"))
+hl.bind(kb.games, hl.dsp.focus({ workspace = "5" }))
 
 hl.bind(kb.move_music, hl.dsp.window.move({ workspace = "special:music" }))
 hl.bind(kb.move_comm, hl.dsp.window.move({ workspace = "special:comm" }))
-hl.bind(kb.move_browser, hl.dsp.window.move({ workspace = "special:browser" }))
-hl.bind(kb.move_games, hl.dsp.window.move({ workspace = "special:gaming" }))
+hl.bind(kb.move_games, hl.dsp.window.move({ workspace = "5" }))
 
 hl.bind(kb.resize .. " + right", hl.dsp.window.resize({ x = 10, y = 0, relative = true }))
 hl.bind(kb.resize .. " + left", hl.dsp.window.resize({ x = -10, y = 0, relative = true }))

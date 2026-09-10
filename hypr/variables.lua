@@ -3,7 +3,7 @@ local home = os.getenv("HOME")
 local M = {}
 
 M.apps = {
-  terminal = "wezterm",
+  terminal = "ghostty",
   browser = "zen-browser",
   filemgr = "yazi",
   menu = "rofi -show drun",
@@ -12,7 +12,7 @@ M.apps = {
   lock = "hyprlock",
   calc = "rofi -show calc",
   ipc = "noctalia msg ",
-  noshot = home .. "/.config/nothings/scripts/noshot.lua",
+  noshot = home .. "/.config/noshot/noshot.lua",
 }
 
 M.kb = {
@@ -50,12 +50,11 @@ M.kb = {
   settings = "SUPER + comma",
   wallpaper = "SUPER + W",
 
-  browser = "SUPER + B",
   games = "SUPER + G",
   comm = "SUPER + D",
   music = "SUPER + M",
+  scratch = "SUPER + apostrophe",
 
-  move_browser = "SUPER + SHIFT + B",
   move_games = "SUPER + SHIFT + G",
   move_comm = "SUPER + SHIFT + D",
   move_music = "SUPER + SHIFT + M",

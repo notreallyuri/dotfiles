@@ -9,9 +9,10 @@ local startup_cmds = {
   "noctalia",
   "mpris-proxy",
 
-  "[workspace special:comm silent] discord",
+  "[workspace special:comm silent] /home/yuri/.local/bin/discord-vpn.sh",
   "[workspace special:music silent] cider --ozone-platform=x11 %U",
-  "[workspace special:browser silent] zen-browser",
+  "[workspace 2 silent] zen-browser",
+  "[workspace special:term silent] ghostty",
 }
 
 hl.on("hyprland.start", function()

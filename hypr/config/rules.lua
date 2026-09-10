@@ -53,11 +53,6 @@ hl.window_rule({
   workspace = "special:music",
 })
 
-hl.window_rule({
-  match = { class = "^(zen|firefox|helium|chromium)$" },
-  workspace = "special:browser",
-})
-
 -- ==========================================
 -- Special Visual Rules
 -- ==========================================
@@ -169,7 +164,7 @@ hl.window_rule({
 
 hl.window_rule({
   match = { tag = "games" },
-  workspace = "special:gaming",
+  workspace = "5",
   no_blur = true,
   fullscreen = true,
   confine_pointer = true,
@@ -181,4 +176,15 @@ hl.window_rule({
     title = "^$",
   },
   no_focus = true,
+})
+
+-- ==========================================
+-- Workspace Rules
+-- ==========================================
+hl.workspace_rule({
+  workspace = "5",
+  monitor = "DP-1",
+  gaps_in = 0,
+  gaps_out = 0,
+  border_size = 0,
 })
