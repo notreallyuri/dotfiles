@@ -38,6 +38,35 @@ pub fn install_binaries(
     Ok(())
 }
 
+/// Put a `noshot` command on $PATH, pointing at the copy just installed under
+/// ~/.config. It stays a symlink in both install modes: noshot.lua needs the
+/// modules sitting next to it, and it resolves the link itself to find them.
+pub fn install_noshot_cli(
+    config_dst: &Path,
+    bin_dst: &Path,
+) -> Result<(), Box<dyn std::error::Error>> {
+    let script = config_dst.join("noshot.lua");
+    if !script.exists() {
+        println!(
+            "  {} No noshot.lua in {}, skipping the command.",
+            style("!").yellow(),
+            config_dst.display()
+        );
+        return Ok(());
+    }
+
+    println!("\n{} Installing the noshot command...", style("●").blue());
+    println!(" ");
+    fs::create_dir_all(bin_dst)?;
+
+    let mut perms = fs::metadata(&script)?.permissions();
+    perms.set_mode(0o755);
+    fs::set_permissions(&script, perms)?;
+
+    process_item(&script, &bin_dst.join("noshot"), true)?;
+    Ok(())
+}
+
 pub fn copy_dir_all(src: impl AsRef<Path>, dst: impl AsRef<Path>) -> std::io::Result<()> {
     fs::create_dir_all(&dst)?;
     for entry in fs::read_dir(src)? {

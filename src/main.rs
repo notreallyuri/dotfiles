@@ -67,6 +67,21 @@ fn run_install(paths: &DotPaths) -> Result<(), Box<dyn std::error::Error>> {
         .default(0)
         .interact()?;
 
+    // noshot is a CLI as much as a config folder, so offer it on $PATH too.
+    let noshot = selections
+        .iter()
+        .map(|&idx| &entries[idx])
+        .find(|name| name.as_str() == "noshot")
+        .map(|name| paths.config_dir.join(name));
+
+    let noshot_cli = match &noshot {
+        Some(_) => Confirm::new()
+            .with_prompt("Also install noshot as a command in ~/.local/bin?")
+            .default(true)
+            .interact()?,
+        None => false,
+    };
+
     if !Confirm::new().with_prompt("Ready to proceed?").interact()? {
         return Ok(());
     }
@@ -80,6 +95,10 @@ fn run_install(paths: &DotPaths) -> Result<(), Box<dyn std::error::Error>> {
     }
 
     install_binaries(&paths.current_dir, &paths.bin_dst, mode_idx == 0)?;
+
+    if let (true, Some(dst)) = (noshot_cli, noshot) {
+        install_noshot_cli(&dst, &paths.bin_dst)?;
+    }
 
     println!("\n{}", style("✔ Installation Complete!").green().bold());
     check_environment(&paths.bin_dst);
@@ -110,6 +129,11 @@ fn run_remove(paths: &DotPaths) -> Result<(), Box<dyn std::error::Error>> {
                 to_remove.push(target);
             }
         }
+    }
+
+    let noshot_cli = paths.bin_dst.join("noshot");
+    if noshot_cli.is_symlink() || noshot_cli.exists() {
+        to_remove.push(noshot_cli);
     }
 
     if to_remove.is_empty() {
