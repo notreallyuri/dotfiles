@@ -36,7 +36,6 @@ wzt.on("update-status", function(window, pane)
   window:set_right_status(wzt.format({
     { Background = { Color = "#58a6ff" } },
     { Foreground = { Color = "#010409" } },
-    { Attribute = { Intensity = "Bold" } },
     { Text = label },
   }))
 end)
@@ -132,7 +131,7 @@ function M.apply_to_config(config)
 
   config.color_scheme = "Tokyo Night"
 
-  config.font = wzt.font("Lilex Nerd Font", { weight = "Medium" })
+  config.font = wzt.font("Lilex Nerd Font")
   config.font_size = 10.5
   config.line_height = 1.0
   config.harfbuzz_features = { "liga=1", "clig=1", "calt=1" }
